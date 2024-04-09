@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "254103199108",
+    "firebase_url": "https://evapp-a4979-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "evapp-a4979",
+    "storage_bucket": "evapp-a4979.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254103199108:android:9b10bd9233a6a0e99091d1",
+        "android_client_info": {
+          "package_name": "com.example.effecient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254103199108-c9f8jf69rpt9ruvr1o5p28m9m9qg7uji.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLGTSrEMfnyvFlfGIFzXkowla4hCoA71k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254103199108-c9f8jf69rpt9ruvr1o5p28m9m9qg7uji.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "254103199108-3fsbfcgaeojmebqfor0snrv0etddtd5b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.googleMapsFlutterExample"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254103199108:android:a7dd60a534a31add9091d1",
+        "android_client_info": {
+          "package_name": "com.example.mapsandfirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254103199108-c9f8jf69rpt9ruvr1o5p28m9m9qg7uji.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLGTSrEMfnyvFlfGIFzXkowla4hCoA71k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254103199108-c9f8jf69rpt9ruvr1o5p28m9m9qg7uji.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "254103199108-3fsbfcgaeojmebqfor0snrv0etddtd5b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.googleMapsFlutterExample"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

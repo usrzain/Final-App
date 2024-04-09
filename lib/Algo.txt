@@ -1,0 +1,94 @@
+input variables:
+
+- current location
+- list of Charging Stations (
+
+            location,
+            Availability = No of slots ( free ),
+            Total No of Charging Slots 
+            Cost per kWh or charging session,
+            Charging speed,
+            Real-time queue length
+
+                )
+
+- Input from user : Type of Electric Vehicle ( for Range Calculations)
+- Avg speed of EV  ( can calculate with the location something )
+- Input from user : Current Charged Level ( added by the user )
+- Real time location
+- Range of EV ( calculated by using the formula below ).
+
+-----------Range Estimation
+
+
+Battery capacity (kWh): This represents the total amount of energy your EV's battery can store. It's typically found in the owner's manual or on the manufacturer's website.
+
+Energy consumption (kWh/km or kWh/mile): This indicates how efficiently your EV uses energy to travel a certain distance. It can be found in the owner's manual, fuel economy ratings, or by using trip data from your EV's onboard computer.
+
+Current (SOC ):
+
+Avg Speed :
+
+Theoretical range (km or miles) : Battery capacity (kWh) *Current SOC (%)* 100 / Energy consumption (kWh/km or kWh/mile)
+
+
+
+----------Range Estimation
+
+------Fast Charging kwh : 7 kW or 22 kW
+
+----------Time for Charging
+ double chargingTime = (100 - soc) / chargingRate;
+
+  // Total energy consumption (kWh)
+  double energyConsumed = chargingTime * chargingRate;
+
+  // Cost calculation
+  double cost = energyConsumed * costPerKwh;
+
+
+
+Decision Factors :
+
+Distance of EV from Charging Station ,
+Charging Speed ( user preference ( Level 1,2 or 3 ))
+Range of Electric Vehicle ,
+SOC at reaching the CS( prediction acc to average speed and range of EV ),
+Time at which EV reach at a particular CS,
+Time of Charging from 10:00  to 12:00
+Availability of Charging Station at that particular time of reaching ,
+queue at the Charging Station( time to wait ),
+
+Current
+Destination
+EV TYPE ( model, port Type)  , consumption rate 
+Current SOC , 
+--------------Range
+Charging speed
+
+
+
+
+
+Flow Chart : 
+
+Range 
+  |
+  |
+Filter CS support EV -----  distance   ------ Availability of Charging Station at that particular time of reaching 
+  |
+  |
+Filter CS in 80 % of Range 
+  |
+  | 
+Max No of free Slots   ||  Queue ( at a Time reaching the CS ) 
+  |
+  |
+
+cost 
+
+
+
+
+
+

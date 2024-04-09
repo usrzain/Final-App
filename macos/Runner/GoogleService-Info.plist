@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>254103199108-m1v88h19f1qt0c7hchdnrd5dqq9ee9a5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.254103199108-m1v88h19f1qt0c7hchdnrd5dqq9ee9a5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>254103199108-r2o8brob1jq6jn9igoaukjbrr31bmrr0.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCmGh-UW7rAAA704hDCQbxxsF_a_U6pR0g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>254103199108</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.effecient.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>evapp-a4979</string>
+	<key>STORAGE_BUCKET</key>
+	<string>evapp-a4979.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:254103199108:ios:bbfa6de79328753b9091d1</string>
+	<key>DATABASE_URL</key>
+	<string>https://evapp-a4979-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>
