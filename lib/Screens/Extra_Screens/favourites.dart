@@ -19,7 +19,7 @@ class _FavouritesState extends State<Favourites> {
           return ListView(
             children: dataProvider.favStationList
                 .map((item) => ListTile(
-                      title: Text(item.value),
+                      title: Text(item),
                     ))
                 .toList(),
           );

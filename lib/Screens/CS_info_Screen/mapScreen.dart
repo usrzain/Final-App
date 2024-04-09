@@ -442,14 +442,37 @@ class _MapScreenState extends State<MapScreen> {
 
                           // Adding a Favourites button
                           FavoriteButton(
-                            isFavorite: fav,
+                            isFavorite: false,
                             // iconDisabledColor: Colors.white,
                             valueChanged: (_isFavorite) async {
                               if (_isFavorite == true) {
-                                print(Provider.of<chDataProvider>(context,
-                                        listen: false)
-                                    .chargingStations
-                                    .values);
+                                print(title);
+
+                                // Check if word exists using contains
+                                if (!localprovider.isFavorite(title)) {
+                                  localprovider.addFavoriteStation(title);
+                                  print(localprovider.favStationList);
+                                } else {
+                                  print(localprovider.favStationList);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title:
+                                            Text('Item is laready selected '),
+                                        content:
+                                            Text('Item is laready selected'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
 
                                 // Save the updated list to Shared Preferences
 

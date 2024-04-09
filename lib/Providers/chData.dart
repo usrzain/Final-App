@@ -94,7 +94,7 @@ class chDataProvider extends ChangeNotifier {
   String? _userName;
   User? _loggedInUser;
   bool _profileFetchingDone = false;
-  List<FavStationData> _favStationList = [];
+  List<String> _favStationList = [];
   LocationData? _currentLocation;
   List<String> _currentLocationList = ['CL1', 'CL2', 'CL3'];
 
@@ -122,7 +122,7 @@ class chDataProvider extends ChangeNotifier {
   User? get loggedInUser => _loggedInUser;
   LocationData? get currentLocation => _currentLocation;
   bool get profileFetchingDone => _profileFetchingDone;
-  List<FavStationData> get favStationList => _favStationList;
+  List<String> get favStationList => _favStationList.toList();
   List<String> get currentLocationList => _currentLocationList;
 
   int value = 1; // Initial value
@@ -247,12 +247,12 @@ class chDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addFavStation(String value) {
-    String key = _generateUniqueKey();
+  void addFavoriteStation(String stationId) {
+    if (!_favStationList.contains(stationId)) {
+      _favStationList.add(stationId);
+      notifyListeners();
+    }
   }
 
-  void removeFavStation(String value) {
-    _favStationList.removeWhere((element) => element.value == value);
-    notifyListeners();
-  }
+  bool isFavorite(String stationId) => _favStationList.contains(stationId);
 }
