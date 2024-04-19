@@ -1,5 +1,8 @@
 // lib/providers/your_data_provider.dart
 
+import 'dart:html';
+import 'dart:js';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -55,10 +58,12 @@ class ChargingStation {
 
 // Fav Station Class
 class FavStationData {
-  final String key;
-  final String value;
+  final String name;
+  final String address;
+  final double cost;
 
-  FavStationData({required this.key, required this.value});
+  FavStationData(
+      {required this.name, required this.address, required this.cost});
 }
 
 String _generateUniqueKey() {
@@ -80,7 +85,7 @@ class chDataProvider extends ChangeNotifier {
   bool _polyLineDone = false;
   Set<Marker> _markers = {};
   Set<Polyline> _pPoints = {};
-  int? _stateOfCharge;
+  int? _stateOfCharge = 2;
   String? _vehBrand;
   String? _vehModel;
   bool _showReset = true;
@@ -94,9 +99,14 @@ class chDataProvider extends ChangeNotifier {
   String? _userName;
   User? _loggedInUser;
   bool _profileFetchingDone = false;
+  Map<String, dynamic> _favStations = {};
   List<String> _favStationList = [];
   LocationData? _currentLocation;
   List<String> _currentLocationList = ['CL1', 'CL2', 'CL3'];
+  double _totalCost = 0.0;
+  double? _timeTaken = 0.0;
+  double _perKWHCost = 0.0;
+  double _totalDistance = 0.0;
 
   // Getter to access the data
   bool get loading => _loading;
@@ -122,8 +132,13 @@ class chDataProvider extends ChangeNotifier {
   User? get loggedInUser => _loggedInUser;
   LocationData? get currentLocation => _currentLocation;
   bool get profileFetchingDone => _profileFetchingDone;
+  Map<String, dynamic> get favStations => _favStations;
   List<String> get favStationList => _favStationList.toList();
   List<String> get currentLocationList => _currentLocationList;
+  double get totalCost => _totalCost;
+  double? get timeTaken => _timeTaken;
+  double get perKWHCost => _perKWHCost;
+  double get totalDistance => _totalDistance;
 
   int value = 1; // Initial value
 
@@ -247,12 +262,109 @@ class chDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addFavoriteStation(String stationId) {
-    if (!_favStationList.contains(stationId)) {
-      _favStationList.add(stationId);
-      notifyListeners();
+  set totalCost(double value) {
+    _totalCost = value;
+    notifyListeners();
+  }
+
+  set timeTaken(double? value) {
+    _timeTaken = value;
+    notifyListeners();
+  }
+
+  set perKWHCost(double value) {
+    _perKWHCost = value;
+    notifyListeners();
+  }
+
+  set totalDistance(double value) {
+    _totalDistance = value;
+    notifyListeners();
+  }
+
+  double getKwhForOnePercent() {
+    switch (vehBrand) {
+      case 'Tesla':
+        return 0.12;
+      case 'BMW':
+        return 0.10;
+      case 'Honda':
+        return 0.8;
+      default:
+        return -1.0; // Indicate an unknown vehicle type
     }
   }
 
-  bool isFavorite(String stationId) => _favStationList.contains(stationId);
+  double arrivalBattery() {
+    double teslaKwhPerKm = 0.2;
+    double bmwKwhPerKm = 0.24;
+    double hondaKwhPerKm = 0.3;
+    double vehKwhPerKm = 0.0;
+    switch (vehBrand) {
+      case 'Tesla':
+        vehKwhPerKm = teslaKwhPerKm;
+      case 'BMW':
+        vehKwhPerKm = bmwKwhPerKm;
+      case 'Honda':
+        vehKwhPerKm = hondaKwhPerKm;
+      default:
+        vehKwhPerKm = 0.0; // Indicate an unknown vehicle type
+    }
+
+    double totalKwhOverTotalDistance = vehKwhPerKm * totalDistance;
+    double kwhperpercent = getKwhForOnePercent();
+    double totalKwhUsable = kwhperpercent * stateOfCharge!.toDouble();
+    double totalKWhAfterJourney = totalKwhUsable - totalKwhOverTotalDistance;
+    double arrivalBattery = totalKWhAfterJourney / kwhperpercent;
+
+    print(arrivalBattery);
+
+    return arrivalBattery;
+  }
+
+  MapEntry<String, dynamic>? findEntryByTitle(
+    String title,
+  ) {
+    // Use where to filter entries where the title is "gkf"
+    return chargingStations.entries
+        .where((entry) => entry.value?['title'] == title)
+        .firstOrNull;
+  }
+
+  bool findEitherFavExistsOrNot(
+    String title,
+  ) {
+    // Use where to filter entries where the title is "gkf"
+    MapEntry<String, dynamic>? result = favStations.entries
+        .where((entry) => entry.value?['title'] == title)
+        .firstOrNull;
+    if (result != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool addFavoriteStation(String stationTitle) {
+    // Find the entry with title "gkf"
+    bool found = findEitherFavExistsOrNot(stationTitle);
+    if (found) {
+      print('already here');
+      print(favStations);
+      return false;
+    } else {
+      final entry = findEntryByTitle(stationTitle);
+      Map<String, dynamic> newData = {
+        entry!.key: {
+          'title': entry.value['title'],
+          'address': entry.value['address'],
+          'cost': entry.value['cost']
+        }
+      };
+      favStations.addAll(newData);
+      print('adding new data ');
+      print(favStations);
+      return true;
+    }
+  }
 }

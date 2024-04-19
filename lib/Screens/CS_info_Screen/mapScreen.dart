@@ -10,6 +10,7 @@ import 'package:effecient/Providers/favStation.dart';
 import 'package:effecient/Screens/CS_info_Screen/extraFun.dart';
 import 'package:effecient/Screens/CS_info_Screen/mapFunctions.dart';
 import 'package:effecient/Screens/CS_info_Screen/polyLine_Response.dart';
+import 'package:effecient/Screens/Extra_Screens/booking.dart';
 
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -445,47 +446,25 @@ class _MapScreenState extends State<MapScreen> {
                             isFavorite: false,
                             // iconDisabledColor: Colors.white,
                             valueChanged: (_isFavorite) async {
-                              if (_isFavorite == true) {
-                                print(title);
-
-                                // Check if word exists using contains
-                                if (!localprovider.isFavorite(title)) {
-                                  localprovider.addFavoriteStation(title);
-                                  print(localprovider.favStationList);
-                                } else {
-                                  print(localprovider.favStationList);
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title:
-                                            Text('Item is laready selected '),
-                                        content:
-                                            Text('Item is laready selected'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: Text('OK'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                }
-
-                                // Save the updated list to Shared Preferences
-
-                                // _prefs?.setStringList(
-                                //     'favList', _favListLocal!);
-                                // Provider.of<chDataProvider>(context,
-                                //             listen: false)
-                                //         .Favstations =
-                                //     _prefs?.getStringList('favList');
+                              if (_isFavorite == true &&
+                                  localprovider
+                                          .findEitherFavExistsOrNot(title) ==
+                                      false) {
+                                localprovider.addFavoriteStation(title);
                               } else {
-                                // Provider.of<chDataProvider>(context,
-                                //         listen: false)
-                                //     .removeFavStation(title);
+                                return showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                          title: Text('It is Already present'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text('OK'),
+                                            ),
+                                          ]);
+                                    });
                               }
                             },
                           ),
@@ -709,8 +688,36 @@ class _MapScreenState extends State<MapScreen> {
                             child: ElevatedButton(
                               onPressed: () {
                                 // Add functionality for the Navigate button
-                                MapsLauncher.launchCoordinates(
-                                    lati, long, title);
+                                // MapsLauncher.launchCoordinates(
+                                //     lati, long, title);
+                                String timeString = time;
+                                String distanceString = distance;
+
+                                // Regular expression to match digits followed by "mins"
+                                RegExp regex = RegExp(r'(\d+)\s+mins');
+
+                                Match? match = regex.firstMatch(timeString);
+
+                                double? timetaken =
+                                    double.parse(match!.group(1)!);
+
+                                List<String> parts = distanceString.split(' ');
+                                double? totalDistance =
+                                    double.tryParse(parts[0]);
+
+                                localprovider.timeTaken = timetaken;
+                                localprovider.perKWHCost = price;
+                                localprovider.totalDistance = totalDistance!;
+
+                                Navigator.of(context)
+                                    .pop(); // Close the bottom sheet
+
+                                print(localprovider.totalDistance);
+                                print(localprovider.totalDistance.runtimeType);
+                                Navigator.pushNamed(
+                                  context,
+                                  '/reservations',
+                                );
                               },
                               style: ButtonStyle(
                                 backgroundColor:

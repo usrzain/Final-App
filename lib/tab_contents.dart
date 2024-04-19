@@ -3,6 +3,7 @@ import 'package:effecient/Screens/Extra_Screens/profile.dart';
 import 'package:effecient/Screens/CS_info_Screen/mapScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:effecient/Screens/Extra_Screens/booking.dart';
 
 class Tab1Content extends StatelessWidget {
   @override
@@ -28,7 +29,7 @@ class Tab3Content extends StatelessWidget {
     return Center(
       child: Container(
         color: Colors.blue, // Color for Tab 3
-        child: Text('Tab 3 Content', style: TextStyle(color: Colors.white)),
+        child: Booking(),
       ),
     );
   }

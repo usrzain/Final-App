@@ -2,6 +2,7 @@ import 'package:effecient/Auth/HomePage.dart';
 import 'package:effecient/Auth/loginPage.dart';
 import 'package:effecient/Data.dart';
 import 'package:effecient/Providers/favStation.dart';
+import 'package:effecient/Screens/Extra_Screens/booking.dart';
 import 'package:effecient/Screens/Extra_Screens/profile.dart';
 import 'package:effecient/Screens/Intro/SplashScreen.dart';
 import 'package:effecient/WelcomePage.dart';
@@ -46,7 +47,9 @@ void main() async {
       ChangeNotifierProvider(create: (context) => chDataProvider()),
       ChangeNotifierProvider(create: (context) => FavoriteStationsProvider())
     ],
-    child: MyApp(initialScreen: SplashScreen()), // Your app's main widget
+    child: MyApp(
+      initialScreen: SplashScreen(),
+    ), // Your app's main widget
   ));
 
   // runApp(ChangeNotifierProvider(
@@ -82,13 +85,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // checkFirstTime();
-    // loggedInUser = FirebaseAuth.instance.currentUser;
-    // if (loggedInUser != null) {
-    //   print('logged in');
-    // } else {
-    //   print('Logged out');
-    // }
   }
 
   @override
@@ -101,6 +97,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       home: widget.initialScreen,
+      routes: {'/reservations': (context) => ReservationScreen()},
     );
   }
 }
