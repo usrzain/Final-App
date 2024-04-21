@@ -1,23 +1,39 @@
 import 'package:effecient/navBar/colors/colors.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:maps_launcher/maps_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:effecient/Providers/chData.dart';
 
 class Booking extends StatefulWidget {
-  const Booking({Key? key}) : super(key: key);
+  final int? timetaken;
+  final double? currentSliderValue;
+  final double? costPerKWH;
+  final double? kWHOnepercent;
+  final Map<String, dynamic>? stationList;
+  const Booking(
+      {Key? key,
+      this.timetaken,
+      this.currentSliderValue,
+      this.costPerKWH,
+      this.kWHOnepercent,
+      this.stationList})
+      : super(key: key);
 
   @override
   State<Booking> createState() => _BookingState();
 }
 
 class _BookingState extends State<Booking> with TickerProviderStateMixin {
-  double _currentSliderValue = 20; // Fixed initial value
   RangeValues _currentRangeValues = const RangeValues(0, 100);
   String _selectedCharge = 'Normal Charge'; // Initially selected charge
   Color _fastChargeColor =
       Colors.grey.shade900; // Initial color for Fast Charge button
   Color _normalChargeColor =
       Colors.blue; // Initial color for Normal Charge button (selected)
+  double totalCost = 0.0;
 
   bool isButtonClicked = false;
   bool isBillOpen = false; // Track if bill is open
@@ -89,6 +105,16 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    double currentCharge = widget.currentSliderValue!;
+    double costperkwh = widget.costPerKWH!;
+    double KwhForOnePercent = widget.kWHOnepercent!;
+    Map<String, dynamic> stationList = widget.stationList!;
+    DateTime now = DateTime.now(); // Using var instead of final
+    Duration durationToAdd =
+        Duration(minutes: widget.timetaken! + 5); // No change
+
+    DateTime futureTime = now.add(durationToAdd);
+    String arrivalTime = futureTime.toString().substring(11, 16);
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
@@ -144,8 +170,8 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                         Expanded(
                           child: RangeSlider(
                             values: RangeValues(
-                                _currentSliderValue, _currentRangeValues.end),
-                            min: 0.0,
+                                currentCharge, _currentRangeValues.end),
+                            min: currentCharge,
                             max: 100.0,
                             divisions:
                                 100, // Set divisions to match your scale sections
@@ -197,7 +223,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                             borderRadius: BorderRadius.circular(5.0),
                           ),
                           child: Text(
-                            '${_currentSliderValue // Fixed initial value
+                            '${currentCharge // Fixed initial value
                                 .round()}%',
                             style: const TextStyle(
                                 fontSize: 16.0, color: Colors.white),
@@ -253,8 +279,27 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                       onPressed: () {
                         setState(() {
                           _selectedCharge = 'Fast Charge';
-                          _fastChargeColor = Colors.blue;
-                          _normalChargeColor = Colors.grey.shade900;
+                          _fastChargeColor =
+                              Colors.blue; // Change color to blue on selection
+                          _normalChargeColor = Colors
+                              .grey.shade900; // Deselect normal charge color
+                          print('before 5 percent');
+                          print(costperkwh);
+                          costperkwh = (costperkwh + (costperkwh * 5 / 100));
+                          print('after 5 percent');
+                          print(costperkwh);
+
+                          print('Charging percent wanted ');
+                          print(_currentRangeValues.end.round() -
+                              currentCharge.round());
+
+                          totalCost = costperkwh *
+                              KwhForOnePercent *
+                              (_currentRangeValues.end.round() -
+                                  currentCharge.round());
+
+                          print('totla cost ');
+                          print(totalCost);
                         });
                       },
                       child: Row(
@@ -292,8 +337,14 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                       onPressed: () {
                         setState(() {
                           _selectedCharge = 'Normal Charge';
-                          _fastChargeColor = Colors.grey.shade900;
-                          _normalChargeColor = Colors.blue;
+                          _fastChargeColor = Colors
+                              .grey.shade900; // Deselect fast charge color
+                          _normalChargeColor =
+                              Colors.blue; // Change color to blue on selection
+                          totalCost = costperkwh *
+                              KwhForOnePercent *
+                              (_currentRangeValues.end.round() -
+                                  currentCharge.round());
                         });
                       },
                       child: Row(
@@ -381,7 +432,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                       size: 28.0, // Adjust size as needed
                     ),
                     Text(
-                      ' Total Cost : \Rs ',
+                      ' Total Cost : Rs $totalCost ',
                       style: const TextStyle(
                           fontSize: 20.0,
                           color: Colors.white,
@@ -424,7 +475,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                         child: Text(
-                          '${addTimeToCurrentTime(0, 35)}', // Assuming this function returns the time to reach
+                          arrivalTime, // Assuming this function returns the time to reach
                           style: const TextStyle(
                               fontSize: 16.0, color: Colors.white),
                         ),
@@ -461,6 +512,8 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      Map<String, dynamic> object = stationList['CS1'];
+                      String Title = object['title'];
                       setState(() {
                         isButtonClicked = true;
                         isBillOpen = true; // Open the bill
@@ -509,7 +562,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        'John Doe',
+                                        '${Provider.of<chDataProvider>(context, listen: false).userName}',
                                         style: TextStyle(color: Colors.white70),
                                       ),
                                     ],
@@ -524,7 +577,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        'Tesla Model S',
+                                        '${Provider.of<chDataProvider>(context, listen: false).vehBrand} Model ${Provider.of<chDataProvider>(context, listen: false).vehModel}',
                                         style: TextStyle(color: Colors.white70),
                                       ),
                                     ],
@@ -539,7 +592,24 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        '12345',
+                                        Provider.of<chDataProvider>(context,
+                                                listen: false)
+                                            .generateRandomNumber(),
+                                        style: TextStyle(color: Colors.white70),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Station Name',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        'Rs $Title',
                                         style: TextStyle(color: Colors.white70),
                                       ),
                                     ],
@@ -554,7 +624,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        '\Rs 50',
+                                        'Rs $totalCost',
                                         style: TextStyle(color: Colors.white70),
                                       ),
                                     ],
@@ -569,7 +639,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        '${addTimeToCurrentTime(0, 35)}',
+                                        '${arrivalTime}',
                                         style: TextStyle(color: Colors.white70),
                                       ),
                                     ],
@@ -584,7 +654,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        '${addTimeToCurrentTime(0, 70)}',
+                                        arrivalTime,
                                         style: TextStyle(color: Colors.white70),
                                       ),
                                     ],
@@ -607,7 +677,28 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                 SizedBox(
                                     width: 8.0), // Add spacing between buttons
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    double lati = Provider.of<chDataProvider>(
+                                            context,
+                                            listen: false)
+                                        .selectedLatitude;
+                                    String title = Provider.of<chDataProvider>(
+                                            context,
+                                            listen: false)
+                                        .selectedStation;
+                                    double long = Provider.of<chDataProvider>(
+                                            context,
+                                            listen: false)
+                                        .selectedLongitude;
+                                    String key = Provider.of<chDataProvider>(
+                                            context,
+                                            listen: false)
+                                        .selectedKey;
+                                    // MapsLauncher.launchCoordinates(
+                                    //     lati, long, title);
+
+                                    updateSpecificValue(stationList, key);
+                                  },
                                   child: Text(
                                     'Save & Go',
                                     style: TextStyle(color: Colors.blue),
@@ -656,5 +747,37 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
             )
           : SizedBox(),
     ]);
+  }
+
+  // Future<void> updateSpecificValue(String objectId, dynamic newValue) async {
+  //   DatabaseReference _databaseReference =
+  //       FirebaseDatabase.instance.ref().child('Locations/$objectId');
+
+  //   // Update the specific key with the new value
+  //   await _databaseReference.update({'available_slots': newValue});
+  // }
+
+  Future<void> updateSpecificValue(
+      Map<String, dynamic> stationList, String key) async {
+    DatabaseReference _databaseReference =
+        FirebaseDatabase.instance.ref().child('Locations/$key');
+    print(key);
+    try {
+      print(stationList.containsKey(key));
+      Map<String, dynamic> object = stationList[key];
+      print(object['available_slots']);
+      int newValue = 0;
+      if (object['available_slots'] == 0) {
+        newValue = object['queue'] + 1;
+        // Update the specific key with the new value
+        await _databaseReference.update({'queue': newValue});
+      } else {
+        newValue = object['available_slots'] - 1;
+        // Update the specific key with the new value
+        await _databaseReference.update({'available_slots': newValue});
+      }
+    } catch (error) {
+      print('cannot find it ');
+    }
   }
 }

@@ -2,6 +2,7 @@
 
 import 'dart:html';
 import 'dart:js';
+import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -107,6 +108,10 @@ class chDataProvider extends ChangeNotifier {
   double? _timeTaken = 0.0;
   double _perKWHCost = 0.0;
   double _totalDistance = 0.0;
+  double _selectedLatitude = 0.0;
+  double _selectedLongitude = 0.0;
+  String _selectedStation = '';
+  String _selectedKey = '';
 
   // Getter to access the data
   bool get loading => _loading;
@@ -139,6 +144,10 @@ class chDataProvider extends ChangeNotifier {
   double? get timeTaken => _timeTaken;
   double get perKWHCost => _perKWHCost;
   double get totalDistance => _totalDistance;
+  double get selectedLatitude => _selectedLatitude;
+  double get selectedLongitude => _selectedLongitude;
+  String get selectedStation => _selectedStation;
+  String get selectedKey => _selectedKey;
 
   int value = 1; // Initial value
 
@@ -282,6 +291,26 @@ class chDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set selectedLatitude(double value) {
+    _selectedLatitude = value;
+    notifyListeners();
+  }
+
+  set selectedLongitude(double value) {
+    _selectedLongitude = value;
+    notifyListeners();
+  }
+
+  set selectedStation(String value) {
+    _selectedStation = value;
+    notifyListeners();
+  }
+
+  set selectedKey(dynamic value) {
+    _selectedKey = value;
+    notifyListeners();
+  }
+
   double getKwhForOnePercent() {
     switch (vehBrand) {
       case 'Tesla':
@@ -320,6 +349,14 @@ class chDataProvider extends ChangeNotifier {
     print(arrivalBattery);
 
     return arrivalBattery;
+  }
+
+  String generateRandomNumber() {
+    final random = Random();
+    // Generate a random integer between 100000 and 999999 (inclusive)
+    var randomNumber = random.nextInt(999999) + 100000;
+    // Convert the integer to a string
+    return randomNumber.toString();
   }
 
   MapEntry<String, dynamic>? findEntryByTitle(

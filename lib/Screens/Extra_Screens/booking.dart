@@ -2,6 +2,7 @@ import 'package:effecient/Providers/chData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:effecient/Screens/Extra_Screens/final.dart';
 
 class ReservationScreen extends StatefulWidget {
   const ReservationScreen({Key? key}) : super(key: key);
@@ -23,16 +24,18 @@ class _BookingReservationScreenState extends State<ReservationScreen> {
         costPerKWH:
             Provider.of<chDataProvider>(context, listen: false).perKWHCost,
         kWHOnepercent: Provider.of<chDataProvider>(context, listen: false)
-            .getKwhForOnePercent());
+            .getKwhForOnePercent(),
+        stationList: Provider.of<chDataProvider>(context, listen: false)
+            .chargingStations);
   }
 }
 
-class Booking extends StatefulWidget {
+class Booking2 extends StatefulWidget {
   final int? timetaken;
   final double? currentSliderValue;
   final double? costPerKWH;
   final double? kWHOnepercent;
-  const Booking(
+  const Booking2(
       {Key? key,
       this.timetaken,
       this.currentSliderValue,
@@ -41,10 +44,10 @@ class Booking extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<Booking> createState() => _BookingState();
+  State<Booking2> createState() => _Booking2State();
 }
 
-class _BookingState extends State<Booking> {
+class _Booking2State extends State<Booking2> {
   RangeValues _currentRangeValues = const RangeValues(0, 100);
   String _selectedCharge = 'Normal Charge'; // Initially selected charge
   Color _fastChargeColor =

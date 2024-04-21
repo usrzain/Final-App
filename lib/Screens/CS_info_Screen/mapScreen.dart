@@ -692,6 +692,9 @@ class _MapScreenState extends State<MapScreen> {
                                 //     lati, long, title);
                                 String timeString = time;
                                 String distanceString = distance;
+                                double Latitude = lati;
+                                double Longitude = long;
+                                String Title = title;
 
                                 // Regular expression to match digits followed by "mins"
                                 RegExp regex = RegExp(r'(\d+)\s+mins');
@@ -708,6 +711,10 @@ class _MapScreenState extends State<MapScreen> {
                                 localprovider.timeTaken = timetaken;
                                 localprovider.perKWHCost = price;
                                 localprovider.totalDistance = totalDistance!;
+                                localprovider.selectedLatitude = Latitude;
+                                localprovider.selectedLongitude = Longitude;
+                                localprovider.selectedStation = Title;
+                                localprovider.selectedKey = key;
 
                                 Navigator.of(context)
                                     .pop(); // Close the bottom sheet

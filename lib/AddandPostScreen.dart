@@ -23,7 +23,7 @@ class _AddandPostScreenState extends State<AddandPostScreen> {
 
   // Reference to the Firebase Realtime Database
   DatabaseReference _databaseReference =
-      FirebaseDatabase.instance.reference().child('Locations');
+      FirebaseDatabase.instance.ref().child('Locations');
 
   @override
   Widget build(BuildContext context) {

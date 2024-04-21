@@ -29,7 +29,7 @@ class Tab3Content extends StatelessWidget {
     return Center(
       child: Container(
         color: Colors.blue, // Color for Tab 3
-        child: Booking(),
+        child: Text('Book'),
       ),
     );
   }
