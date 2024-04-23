@@ -43,6 +43,9 @@ class _LoginPageState extends State<LoginPage> {
         Provider.of<chDataProvider>(context, listen: false)
             .profileFetchingDone = true;
         print('$name');
+        print('Profile Fetching is Done');
+        print(Provider.of<chDataProvider>(context, listen: false)
+            .profileFetchingDone);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

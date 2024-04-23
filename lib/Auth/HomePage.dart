@@ -1,3 +1,4 @@
+import 'package:effecient/Providers/chData.dart';
 import 'package:effecient/Screens/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:effecient/navBar/colors/colors.dart';
@@ -11,6 +12,7 @@ import 'package:effecient/Auth/SignupPage.dart';
 
 //import 'package:effecient/Auth/loginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 //import 'package:flutter/material.dart';
 //import 'tab_contents.dart';
 //import 'package:flutter/material.dart';
@@ -31,6 +33,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
+    print(Provider.of<chDataProvider>(context, listen: false).userName);
     super.initState();
     _tabController = TabController(length: navBtn.length, vsync: this);
     _tabController.addListener(() {

@@ -28,7 +28,7 @@ class Booking extends StatefulWidget {
 
 class _BookingState extends State<Booking> with TickerProviderStateMixin {
   RangeValues _currentRangeValues = const RangeValues(0, 100);
-  String _selectedCharge = 'Normal Charge'; // Initially selected charge
+  dynamic _selectedCharge = null; // Initially selected charge
   Color _fastChargeColor =
       Colors.grey.shade900; // Initial color for Fast Charge button
   Color _normalChargeColor =
@@ -283,8 +283,10 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          allowToBook = true;
+                          Provider.of<chDataProvider>(context, listen: false)
+                              .allowToBook = true;
                           _selectedCharge = 'Fast Charge';
+                          print('Selected Charge is ${_selectedCharge}');
                           _fastChargeColor =
                               Colors.blue; // Change color to blue on selection
                           _normalChargeColor = Colors
@@ -342,8 +344,10 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          allowToBook = true;
+                          Provider.of<chDataProvider>(context, listen: false)
+                              .allowToBook = true;
                           _selectedCharge = 'Normal Charge';
+                          print('Selected Charge is ${_selectedCharge}');
                           _fastChargeColor = Colors
                               .grey.shade900; // Deselect fast charge color
                           _normalChargeColor =
@@ -519,7 +523,13 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (allowToBook) {
+                      // print(_selectedCharge);
+                      // if (_selectedCharge != null) {
+                      //   print(_selectedCharge);
+                      // } else {
+                      //   print('select the Charging type');
+                      // }
+                      if (_selectedCharge != null) {
                         Map<String, dynamic> object = stationList['CS1'];
                         String Title = object['title'];
                         String tokenNum =
@@ -738,19 +748,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                           },
                         );
                       } else {
-                        AlertDialog(
-                          title: Text('Error !!'),
-                          content: Text(
-                              'please Choose the Charging type to calculate the cost properly'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Close'),
-                            ),
-                          ],
-                        );
+                        selectAlert(context);
                       }
                     },
                     child: Text(
@@ -790,6 +788,31 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
             )
           : SizedBox(),
     ]);
+  }
+
+  Future<void> selectAlert(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: const Text(
+            'Select a type of Charging for proper cost calculation',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Future<void> updateSpecificValue(String objectId, dynamic newValue) async {

@@ -113,6 +113,7 @@ class chDataProvider extends ChangeNotifier {
   String _selectedStation = '';
   String _selectedKey = '';
   Map<String, dynamic> _bookings = {};
+  bool _allowToBook = false;
 
   // Getter to access the data
   bool get loading => _loading;
@@ -150,6 +151,7 @@ class chDataProvider extends ChangeNotifier {
   String get selectedStation => _selectedStation;
   String get selectedKey => _selectedKey;
   Map<String, dynamic> get bookings => _bookings;
+  bool get allowToBook => _allowToBook;
 
   int value = 1; // Initial value
 
@@ -310,6 +312,11 @@ class chDataProvider extends ChangeNotifier {
 
   set selectedKey(dynamic value) {
     _selectedKey = value;
+    notifyListeners();
+  }
+
+  set allowToBook(bool value) {
+    _allowToBook = value;
     notifyListeners();
   }
 

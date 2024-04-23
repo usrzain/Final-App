@@ -6,11 +6,13 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:effecient/Auth/loginPage.dart';
 import 'package:effecient/Providers/favStation.dart';
 import 'package:effecient/Screens/CS_info_Screen/extraFun.dart';
 import 'package:effecient/Screens/CS_info_Screen/mapFunctions.dart';
 import 'package:effecient/Screens/CS_info_Screen/polyLine_Response.dart';
 import 'package:effecient/Screens/Extra_Screens/booking.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
