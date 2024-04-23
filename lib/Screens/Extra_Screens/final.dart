@@ -115,6 +115,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
 
     DateTime futureTime = now.add(durationToAdd);
     String arrivalTime = futureTime.toString().substring(11, 16);
+    bool allowToBook = false;
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
@@ -182,6 +183,10 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                             onChanged: (RangeValues values) {
                               setState(() {
                                 _currentRangeValues = values;
+                                totalCost = costperkwh *
+                                    KwhForOnePercent *
+                                    (_currentRangeValues.end.round() -
+                                        currentCharge.round());
                               });
                             },
                             activeColor: Colors.blue,
@@ -224,7 +229,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                           ),
                           child: Text(
                             '${currentCharge // Fixed initial value
-                                .round()}%',
+                                .round() <= 0 ? '1' : currentCharge.round()}%',
                             style: const TextStyle(
                                 fontSize: 16.0, color: Colors.white),
                           ),
@@ -278,6 +283,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
+                          allowToBook = true;
                           _selectedCharge = 'Fast Charge';
                           _fastChargeColor =
                               Colors.blue; // Change color to blue on selection
@@ -336,6 +342,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
+                          allowToBook = true;
                           _selectedCharge = 'Normal Charge';
                           _fastChargeColor = Colors
                               .grey.shade900; // Deselect fast charge color
@@ -388,7 +395,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                     children: [
                       SizedBox(width: 8),
                       Text(
-                        '∴  Cost of 1kwh for normal charge is Rs ',
+                        '∴  Cost of 1kwh for normal charge is Rs ${costperkwh}',
                         style: const TextStyle(
                           fontSize: 12.0,
                           color: Colors.grey,
@@ -402,7 +409,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                     padding:
                         const EdgeInsets.only(left: 22), // Add left padding
                     child: Text(
-                      'Cost of 1kwh for fast charge is Rs ',
+                      'Cost of 1kwh for fast charge is Rs ${(costperkwh + (costperkwh * 5 / 100))}',
                       style: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.grey,
@@ -432,7 +439,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                       size: 28.0, // Adjust size as needed
                     ),
                     Text(
-                      ' Total Cost : Rs $totalCost ',
+                      ' Total Cost : Rs ${totalCost.toInt()} ',
                       style: const TextStyle(
                           fontSize: 20.0,
                           color: Colors.white,
@@ -512,203 +519,239 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Map<String, dynamic> object = stationList['CS1'];
-                      String Title = object['title'];
-                      setState(() {
-                        isButtonClicked = true;
-                        isBillOpen = true; // Open the bill
-                      });
+                      if (allowToBook) {
+                        Map<String, dynamic> object = stationList['CS1'];
+                        String Title = object['title'];
+                        String tokenNum =
+                            Provider.of<chDataProvider>(context, listen: false)
+                                .generateRandomNumber();
+                        setState(() {
+                          isButtonClicked = true;
+                          isBillOpen = true; // Open the bill
+                        });
 
-                      showDialog(
-                        barrierDismissible:
-                            false, // Prevent dismissing by tapping outside
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Theme(
-                            data: ThemeData(
-                              brightness: Brightness.dark,
-                              primaryColor: Colors.blue,
-                            ),
-                            child: AlertDialog(
-                              backgroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                side: BorderSide(
-                                    color: Colors.blue,
-                                    width: 0.7), // Increased border width
+                        showDialog(
+                          barrierDismissible:
+                              false, // Prevent dismissing by tapping outside
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Theme(
+                              data: ThemeData(
+                                brightness: Brightness.dark,
+                                primaryColor: Colors.blue,
                               ),
-                              title: Text(
-                                "Bill Details",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
-                                  // decoration: TextDecoration.underline,
-                                  // decorationColor: Colors.blue,
+                              child: AlertDialog(
+                                backgroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  side: BorderSide(
+                                      color: Colors.blue,
+                                      width: 0.7), // Increased border width
                                 ),
-                                textAlign:
-                                    TextAlign.center, // Center align the title
-                              ),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Name : ',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        '${Provider.of<chDataProvider>(context, listen: false).userName}',
-                                        style: TextStyle(color: Colors.white70),
-                                      ),
-                                    ],
+                                title: Text(
+                                  "Bill Details",
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                    // decoration: TextDecoration.underline,
+                                    // decorationColor: Colors.blue,
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'EV : ',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        '${Provider.of<chDataProvider>(context, listen: false).vehBrand} Model ${Provider.of<chDataProvider>(context, listen: false).vehModel}',
-                                        style: TextStyle(color: Colors.white70),
-                                      ),
-                                    ],
+                                  textAlign: TextAlign
+                                      .center, // Center align the title
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Name : ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          '${Provider.of<chDataProvider>(context, listen: false).userName}',
+                                          style:
+                                              TextStyle(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'EV : ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          '${Provider.of<chDataProvider>(context, listen: false).vehBrand} Model ${Provider.of<chDataProvider>(context, listen: false).vehModel}',
+                                          style:
+                                              TextStyle(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Token No : ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          tokenNum,
+                                          style:
+                                              TextStyle(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Station Name',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          Title,
+                                          style:
+                                              TextStyle(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Cost : ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          'Rs $totalCost',
+                                          style:
+                                              TextStyle(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Time to Reach : ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          '${arrivalTime}',
+                                          style:
+                                              TextStyle(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Valid Till : ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          arrivalTime,
+                                          style:
+                                              TextStyle(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isBillOpen = false; // Close the bill
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      'Close',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Token No : ',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        Provider.of<chDataProvider>(context,
-                                                listen: false)
-                                            .generateRandomNumber(),
-                                        style: TextStyle(color: Colors.white70),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Station Name',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        'Rs $Title',
-                                        style: TextStyle(color: Colors.white70),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Cost : ',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        'Rs $totalCost',
-                                        style: TextStyle(color: Colors.white70),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Time to Reach : ',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        '${arrivalTime}',
-                                        style: TextStyle(color: Colors.white70),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Valid Till : ',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        arrivalTime,
-                                        style: TextStyle(color: Colors.white70),
-                                      ),
-                                    ],
+                                  SizedBox(
+                                      width:
+                                          8.0), // Add spacing between buttons
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      double lati = Provider.of<chDataProvider>(
+                                              context,
+                                              listen: false)
+                                          .selectedLatitude;
+                                      String title =
+                                          Provider.of<chDataProvider>(context,
+                                                  listen: false)
+                                              .selectedStation;
+                                      double long = Provider.of<chDataProvider>(
+                                              context,
+                                              listen: false)
+                                          .selectedLongitude;
+                                      String key = Provider.of<chDataProvider>(
+                                              context,
+                                              listen: false)
+                                          .selectedKey;
+
+                                      updateSpecificValue(stationList, key);
+                                      Provider.of<chDataProvider>(context,
+                                              listen: false)
+                                          .addBookings(title, tokenNum,
+                                              arrivalTime, totalCost);
+                                      // MapsLauncher.launchCoordinates(
+                                      //     lati, long, title);
+                                    },
+                                    child: Text(
+                                      'Save & Go',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
                                   ),
                                 ],
                               ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      isBillOpen = false; // Close the bill
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    'Close',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                SizedBox(
-                                    width: 8.0), // Add spacing between buttons
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    double lati = Provider.of<chDataProvider>(
-                                            context,
-                                            listen: false)
-                                        .selectedLatitude;
-                                    String title = Provider.of<chDataProvider>(
-                                            context,
-                                            listen: false)
-                                        .selectedStation;
-                                    double long = Provider.of<chDataProvider>(
-                                            context,
-                                            listen: false)
-                                        .selectedLongitude;
-                                    String key = Provider.of<chDataProvider>(
-                                            context,
-                                            listen: false)
-                                        .selectedKey;
-                                    // MapsLauncher.launchCoordinates(
-                                    //     lati, long, title);
-
-                                    updateSpecificValue(stationList, key);
-                                  },
-                                  child: Text(
-                                    'Save & Go',
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                ),
-                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        AlertDialog(
+                          title: Text('Error !!'),
+                          content: Text(
+                              'please Choose the Charging type to calculate the cost properly'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Close'),
                             ),
-                          );
-                        },
-                      );
+                          ],
+                        );
+                      }
                     },
                     child: Text(
                       'Book & Navigate',

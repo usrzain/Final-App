@@ -112,6 +112,7 @@ class chDataProvider extends ChangeNotifier {
   double _selectedLongitude = 0.0;
   String _selectedStation = '';
   String _selectedKey = '';
+  Map<String, dynamic> _bookings = {};
 
   // Getter to access the data
   bool get loading => _loading;
@@ -148,6 +149,7 @@ class chDataProvider extends ChangeNotifier {
   double get selectedLongitude => _selectedLongitude;
   String get selectedStation => _selectedStation;
   String get selectedKey => _selectedKey;
+  Map<String, dynamic> get bookings => _bookings;
 
   int value = 1; // Initial value
 
@@ -378,6 +380,26 @@ class chDataProvider extends ChangeNotifier {
     if (result != null) {
       return true;
     } else {
+      return false;
+    }
+  }
+
+  bool addBookings(String stationTitle, String token, time, cost) {
+    try {
+      final entry = findEntryByTitle(stationTitle);
+      Map<String, dynamic> newData = {
+        entry!.key: {
+          'Booked on': DateTime.now(),
+          'title': entry.value['title'],
+          'address': entry.value['address'],
+          'total cost': cost,
+          'token': token,
+          'time': time
+        }
+      };
+      bookings.addAll(newData);
+      return true;
+    } catch (error) {
       return false;
     }
   }

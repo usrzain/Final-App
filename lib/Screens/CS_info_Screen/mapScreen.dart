@@ -997,9 +997,12 @@ class _MapScreenState extends State<MapScreen> {
     int? userInput;
     String? selectedTitle = '';
     String? selectedSecondTitle = '';
+    double currentValue = 0.0;
 
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
+        RangeValues _currentRangeValues = const RangeValues(0, 100);
+
         return SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(20.0),
@@ -1010,11 +1013,27 @@ class _MapScreenState extends State<MapScreen> {
                   'Enter Input:',
                   style: TextStyle(fontSize: 18),
                 ),
+                Slider(
+                  min: 0,
+                  max: 100,
+                  value: currentValue,
+                  onChanged: (double value) {
+                    setState(() {
+                      currentValue = value;
+                    });
+                  },
+                  // Customize the appearance of the slider
+                  activeColor: Colors.blue,
+                  inactiveColor: Colors.grey,
+                  divisions: 100, // Optional: Specify the number of divisions
+                  label:
+                      '$currentValue', // Optional: Show a label above the slider
+                ),
                 SizedBox(height: 10),
                 TextFormField(
                   onChanged: (value) {
                     setState(() {
-                      userInput = int.parse(value);
+                      userInput = currentValue.toInt();
                     });
                   },
                   decoration: InputDecoration(
