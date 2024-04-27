@@ -1,7 +1,5 @@
 // lib/providers/your_data_provider.dart
 
-import 'dart:html';
-import 'dart:js';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
