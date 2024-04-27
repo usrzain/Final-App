@@ -1,5 +1,6 @@
 import 'package:effecient/Auth/loginPage.dart';
 import 'package:effecient/Providers/chData.dart';
+import 'package:effecient/Screens/CarSelection/carSelect.dart';
 import 'package:effecient/WelcomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -165,8 +166,10 @@ class _SignupPageState extends State<SignupPage> {
 
       // Navigate to another page after successful registration
       // You can replace 'MyTabScreen' with the name of the screen you want to navigate to
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => HomePage(user: userCredential.user)));
+      // Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //     builder: (context) => HomePage(user: userCredential.user)));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => CarSelect()));
     } catch (e) {
       setState(() {
         _errorText = e.toString();

@@ -502,7 +502,9 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: Text(
                       'Cancel',
                       style:
@@ -652,7 +654,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          'Rs $totalCost',
+                                          'Rs ${totalCost.toInt()}',
                                           style:
                                               TextStyle(color: Colors.white70),
                                         ),
@@ -734,8 +736,8 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                               listen: false)
                                           .addBookings(title, tokenNum,
                                               arrivalTime, totalCost);
-                                      // MapsLauncher.launchCoordinates(
-                                      //     lati, long, title);
+                                      MapsLauncher.launchCoordinates(
+                                          lati, long, title);
                                     },
                                     child: Text(
                                       'Save & Go',

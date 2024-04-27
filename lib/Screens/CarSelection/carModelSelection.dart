@@ -1,3 +1,4 @@
+import 'package:effecient/Screens/CarSelection/detailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'carVersionSelection.dart';
@@ -69,7 +70,7 @@ class _CarModelSelectionState extends State<CarModelSelection> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CarVersionSelection(
+                    builder: (context) => DetailsScreen(
                       selectedManufacturer: widget.selectedManufacturer,
                       selectedModel: modelsData[index],
                     ),

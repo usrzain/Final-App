@@ -89,6 +89,7 @@ class chDataProvider extends ChangeNotifier {
   String? _vehModel;
   bool _showReset = true;
   double _range = 0;
+  double _showRange = 0;
   bool _hasSeenTheIntro = false;
   bool _initialLoadingComplete = false;
   String? _userEmail;
@@ -112,6 +113,9 @@ class chDataProvider extends ChangeNotifier {
   String _selectedKey = '';
   Map<String, dynamic> _bookings = {};
   bool _allowToBook = false;
+  bool _allowToNavigate = false;
+  String _defaultBrand = '';
+  String _defaultModel = '';
 
   // Getter to access the data
   bool get loading => _loading;
@@ -150,6 +154,10 @@ class chDataProvider extends ChangeNotifier {
   String get selectedKey => _selectedKey;
   Map<String, dynamic> get bookings => _bookings;
   bool get allowToBook => _allowToBook;
+  bool get allowToNavigate => _allowToNavigate;
+  double get showRange => _showRange;
+  String get defaultBrand => _defaultBrand;
+  String get defaultModel => _defaultModel;
 
   int value = 1; // Initial value
 
@@ -230,6 +238,11 @@ class chDataProvider extends ChangeNotifier {
 
   set range(double value) {
     _range = value;
+    notifyListeners();
+  }
+
+  set showRange(double value) {
+    _showRange = value;
     notifyListeners();
   }
 
@@ -315,6 +328,21 @@ class chDataProvider extends ChangeNotifier {
 
   set allowToBook(bool value) {
     _allowToBook = value;
+    notifyListeners();
+  }
+
+  set allowToNavigate(bool value) {
+    _allowToNavigate = value;
+    notifyListeners();
+  }
+
+  set defaultBrand(String value) {
+    _defaultBrand = value;
+    notifyListeners();
+  }
+
+  set defaultModel(String value) {
+    _defaultModel = value;
     notifyListeners();
   }
 

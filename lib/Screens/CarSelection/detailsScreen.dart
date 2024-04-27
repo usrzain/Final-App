@@ -1,15 +1,16 @@
+import 'package:effecient/Auth/HomePage.dart';
+import 'package:effecient/Providers/chData.dart';
 import 'package:flutter/material.dart';
 import 'package:effecient/Screens/PortSelection/EvPortSelectionScreen.dart';
+import 'package:provider/provider.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String selectedManufacturer;
   final String selectedModel;
-  final String selectedVersion;
 
   DetailsScreen({
     required this.selectedManufacturer,
     required this.selectedModel,
-    required this.selectedVersion,
   });
 
   @override
@@ -79,29 +80,20 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     'Model: ${widget.selectedModel}',
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
-                  Text(
-                    'Version: ${widget.selectedVersion}',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Additional Details:',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                  Text(
-                    additionalDetails ?? 'Loading...',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
                 ],
               ),
             ),
             ElevatedButton(
               onPressed: () {
+                Provider.of<chDataProvider>(context, listen: false)
+                    .defaultBrand = widget.selectedManufacturer;
+                Provider.of<chDataProvider>(context, listen: false)
+                    .defaultModel = widget.selectedModel;
                 // Navigate to the next screen
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EvPortSelectionScreen(),
+                    builder: (context) => const HomePage(),
                   ),
                 );
               },

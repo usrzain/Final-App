@@ -41,6 +41,8 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   Location _location = Location();
   SharedPreferences? _prefs;
+  late BitmapDescriptor chargingStationIcon;
+  late BitmapDescriptor VehicleIcon;
 
   Set<Marker> _markers = {}; // Set to store markers
   GoogleMapController? _mapController;
@@ -79,11 +81,26 @@ class _MapScreenState extends State<MapScreen> {
     _favListLocal = _prefs?.getStringList('favList');
   }
 
+  _createCustomMarkerBitmap(String s) async {
+    return await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(),
+      s, // Adjust the path as per your folder structure
+    );
+  }
+
+  Future<void> _loadCustomIcons() async {
+    chargingStationIcon =
+        await _createCustomMarkerBitmap('assets/electric-carcopy.png');
+    VehicleIcon =
+        await _createCustomMarkerBitmap('assets/electric-carcopy.png');
+  }
+
   @override
   void initState() {
     chDataProvider localprovider =
         Provider.of<chDataProvider>(context, listen: false);
     _initializePrefs();
+    _loadCustomIcons();
     addCustomIcon();
     super.initState();
     _timer = Timer.periodic(Duration(milliseconds: 5), (timer) {
@@ -281,19 +298,18 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       // here error
       localprovider.markers.clear();
-      localprovider.markers.add(
-        Marker(
-          markerId: const MarkerId('current_location'),
-          position: LatLng(
-            localprovider.currentLocation?.latitude ?? 0.0,
-            localprovider.currentLocation?.longitude ?? 0.0,
-          ),
-          infoWindow: const InfoWindow(title: 'Your Location'),
-          icon: BitmapDescriptor.defaultMarkerWithHue((bToggle)
-              ? BitmapDescriptor.hueYellow
-              : BitmapDescriptor.hueAzure),
+      localprovider.markers.add(Marker(
+        markerId: const MarkerId('current_location'),
+        position: LatLng(
+          localprovider.currentLocation?.latitude ?? 0.0,
+          localprovider.currentLocation?.longitude ?? 0.0,
         ),
-      );
+        infoWindow: const InfoWindow(title: 'Your Location'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(
+            (bToggle) ? BitmapDescriptor.hueRed : BitmapDescriptor.hueAzure),
+
+        // icon: VehicleIcon),
+      ));
 
       for (var key in localprovider.chargingStations.keys) {
         String title = localprovider.chargingStations[key]['title'];
@@ -445,6 +461,7 @@ class _MapScreenState extends State<MapScreen> {
 
                           // Adding a Favourites button
                           FavoriteButton(
+                            iconSize: 50,
                             isFavorite: false,
                             // iconDisabledColor: Colors.white,
                             valueChanged: (_isFavorite) async {
@@ -567,7 +584,7 @@ class _MapScreenState extends State<MapScreen> {
                               color: Colors.green,
                             ),
                             SizedBox(width: 5.0),
-                            Text('$price',
+                            Text('Rs $price / Kwh',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16.0,
@@ -597,7 +614,7 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                           SizedBox(width: 5.0),
                           Text(
-                            'Slots Available is', // Replace with the actual charger information
+                            'Available Slots:', // Replace with the actual charger information
 
                             style: TextStyle(
                               color: Colors.white70,
@@ -608,7 +625,7 @@ class _MapScreenState extends State<MapScreen> {
                           Row(
                             children: [
                               Text(
-                                ' $slotsText', // Use the variable for the number of available slots
+                                '$slotsText', // Use the variable for the number of available slots
 
                                 style: TextStyle(
                                   fontFamily: 'Raleway',
@@ -638,7 +655,7 @@ class _MapScreenState extends State<MapScreen> {
                             ),
                             SizedBox(width: 5.0),
                             Text(
-                              '$queue', // Replace with the actual information
+                              'Queue : $queue', // Replace with the actual information
 
                               style: TextStyle(
                                 color: Colors.white70,
@@ -803,7 +820,7 @@ class _MapScreenState extends State<MapScreen> {
                               mapType: MapType.normal,
                               initialCameraPosition: CameraPosition(
                                 target: dataProvider.initialPosition,
-                                zoom: 12.0,
+                                zoom: 20.0,
                               ),
                               onMapCreated: (GoogleMapController controller) {
                                 _mapController = controller;
@@ -997,8 +1014,8 @@ class _MapScreenState extends State<MapScreen> {
   Widget openFilterModal(
       BuildContext context, double? currentLAT, double? currentLONG) {
     int? userInput;
-    String? selectedTitle = '';
-    String? selectedSecondTitle = '';
+    String selectedTitle = '';
+    String selectedSecondTitle = '';
     double currentValue = 0.0;
 
     return StatefulBuilder(
@@ -1015,27 +1032,11 @@ class _MapScreenState extends State<MapScreen> {
                   'Enter Input:',
                   style: TextStyle(fontSize: 18),
                 ),
-                Slider(
-                  min: 0,
-                  max: 100,
-                  value: currentValue,
-                  onChanged: (double value) {
-                    setState(() {
-                      currentValue = value;
-                    });
-                  },
-                  // Customize the appearance of the slider
-                  activeColor: Colors.blue,
-                  inactiveColor: Colors.grey,
-                  divisions: 100, // Optional: Specify the number of divisions
-                  label:
-                      '$currentValue', // Optional: Show a label above the slider
-                ),
                 SizedBox(height: 10),
                 TextFormField(
                   onChanged: (value) {
                     setState(() {
-                      userInput = currentValue.toInt();
+                      userInput = int.parse(value);
                     });
                   },
                   decoration: InputDecoration(
@@ -1162,8 +1163,10 @@ class _MapScreenState extends State<MapScreen> {
                       }
 
                       double calculate_Range = userInput! / 100 * totalRange;
-
+                      print('${calculate_Range} km');
                       dataProvider.range = calculate_Range;
+                      dataProvider.showRange = calculate_Range * 1000;
+                      print(dataProvider.showRange);
                       requestForBestCS(currentLAT, currentLONG, userInput,
                           selectedTitle, selectedSecondTitle);
                     } else {}

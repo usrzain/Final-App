@@ -1,8 +1,10 @@
+import 'package:effecient/Providers/chData.dart';
 import 'package:effecient/Screens/Extra_Screens/bookHistory.dart';
 import 'package:effecient/Screens/Extra_Screens/favourites.dart';
 import 'package:effecient/Screens/Extra_Screens/profile.dart';
-import 'package:effecient/Screens/CS_info_Screen/mapScreen.dart';
+import 'package:effecient/Screens/CS_info_Screen/mapScreenFinal.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Tab1Content extends StatelessWidget {
   @override
@@ -40,7 +42,11 @@ class Tab4Content extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ProfileScreen(),
+      body: ProfileScreen(
+          userName:
+              Provider.of<chDataProvider>(context, listen: false).userName,
+          userEmail:
+              Provider.of<chDataProvider>(context, listen: false).userEmail),
     );
   }
 }

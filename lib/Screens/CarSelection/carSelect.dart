@@ -1,3 +1,4 @@
+import 'package:effecient/Screens/CarSelection/carSelection.dart';
 import 'package:flutter/material.dart';
 
 class CarSelect extends StatefulWidget {
@@ -56,6 +57,8 @@ class _CarSelectState extends State<CarSelect> {
                 ElevatedButton(
                   onPressed: () {
                     // Handle next screen navigation
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => CarSelection()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue, // Set button color to blue

@@ -77,7 +77,6 @@ class _CarVersionSelectionState extends State<CarVersionSelection> {
                     builder: (context) => DetailsScreen(
                       selectedManufacturer: widget.selectedManufacturer,
                       selectedModel: widget.selectedModel,
-                      selectedVersion: versions[index],
                     ),
                   ),
                 );

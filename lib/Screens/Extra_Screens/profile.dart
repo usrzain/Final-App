@@ -8,6 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
+  final String? userName;
+  final String? userEmail;
+  const ProfileScreen(
+      {Key? key, required this.userName, required this.userEmail})
+      : super(key: key);
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -123,11 +128,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       CrossAxisAlignment.center, // Center elements horizontally
                   children: [
                     Text(
-                      "${dataProvider.userName}",
+                      "${widget.userName}",
                       style: TextStyle(color: Colors.white, fontSize: 26.0),
                     ),
                     Text(
-                      "${dataProvider.userEmail}",
+                      "${widget.userEmail}",
                       style: TextStyle(color: Colors.grey, fontSize: 18.0),
                     ),
                   ],

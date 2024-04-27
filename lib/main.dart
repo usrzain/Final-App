@@ -6,11 +6,13 @@ import 'package:effecient/Screens/Extra_Screens/booking.dart';
 import 'package:effecient/Screens/Extra_Screens/profile.dart';
 import 'package:effecient/Screens/Intro/SplashScreen.dart';
 import 'package:effecient/WelcomePage.dart';
+import 'package:effecient/dependency_injection.dart';
 import 'package:effecient/navBar/animatedNavBar.dart';
 import 'package:effecient/tab_contents.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -35,7 +37,7 @@ void main() async {
   // Preview the WelcomePage directly
   //runApp(MyApp(initialScreen: HomePage(user: User,)));
 
-  //runApp(MyApp(initialScreen: MyTabScreen()));
+  // runApp(MyApp(initialScreen: MapScreen()));
 
   //runApp(MyApp(initialScreen: ProfileScreen()));
 
@@ -51,7 +53,7 @@ void main() async {
       initialScreen: SplashScreen(),
     ), // Your app's main widget
   ));
-
+  DependencyInjection.init();
   // runApp(ChangeNotifierProvider(
   //   // Create an instance of YourDataProvider
   //   create: (context) => chDataProvider(),
@@ -89,7 +91,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
