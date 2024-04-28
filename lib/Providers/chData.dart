@@ -116,6 +116,8 @@ class chDataProvider extends ChangeNotifier {
   bool _allowToNavigate = false;
   String _defaultBrand = '';
   String _defaultModel = '';
+  List<Map<String, dynamic>> _brandList = [];
+  List<Map<String, dynamic>> _modelList = [];
 
   // Getter to access the data
   bool get loading => _loading;
@@ -158,6 +160,8 @@ class chDataProvider extends ChangeNotifier {
   double get showRange => _showRange;
   String get defaultBrand => _defaultBrand;
   String get defaultModel => _defaultModel;
+  List<Map<String, dynamic>> get brandList => _brandList;
+  List<Map<String, dynamic>> get modelList => _modelList;
 
   int value = 1; // Initial value
 
@@ -346,16 +350,25 @@ class chDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set brandList(value) {
+    _brandList = value;
+    notifyListeners();
+  }
+
+  set modelList(value) {
+    _modelList = value;
+    notifyListeners();
+  }
+
   double getKwhForOnePercent() {
     switch (vehBrand) {
       case 'Tesla':
         return 0.12;
       case 'BMW':
         return 0.10;
-      case 'Honda':
-        return 0.8;
+
       default:
-        return -1.0; // Indicate an unknown vehicle type
+        return 0.8; // Indicate an unknown vehicle type
     }
   }
 
@@ -369,10 +382,9 @@ class chDataProvider extends ChangeNotifier {
         vehKwhPerKm = teslaKwhPerKm;
       case 'BMW':
         vehKwhPerKm = bmwKwhPerKm;
-      case 'Honda':
-        vehKwhPerKm = hondaKwhPerKm;
+
       default:
-        vehKwhPerKm = 0.0; // Indicate an unknown vehicle type
+        vehKwhPerKm = hondaKwhPerKm; // Indicate an Honda vehicle type
     }
 
     double totalKwhOverTotalDistance = vehKwhPerKm * totalDistance;

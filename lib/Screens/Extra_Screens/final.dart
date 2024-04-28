@@ -541,6 +541,8 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                           isButtonClicked = true;
                           isBillOpen = true; // Open the bill
                         });
+                        print(
+                            '${Provider.of<chDataProvider>(context, listen: false).vehBrand} Model ${Provider.of<chDataProvider>(context, listen: false).vehModel}');
 
                         showDialog(
                           barrierDismissible:

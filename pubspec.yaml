@@ -47,6 +47,7 @@ dependencies:
   animations: ^2.0.11
   connectivity_plus: ^6.0.3
   get: ^4.6.6
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:
@@ -60,13 +61,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/charging-station_5396371.png
+    - assets/
     - assets/carSelectionImages/
     - assets/Intro/
-    - assets/charger.png
-    - assets/Business.png
-    - assets/p.png
-    - assets/add-user.png
-    - assets/electric-car.png
-    - assets/electric-carcopy.png
-    - assets/Lovepik_com-380308370-route-positioning-position-icon-location-icon-direction-positioning-icons.png
+    

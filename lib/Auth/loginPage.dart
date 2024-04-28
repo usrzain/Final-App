@@ -36,13 +36,24 @@ class _LoginPageState extends State<LoginPage> {
         final name = userData['username'];
         final email =
             userData['email']; // This will be the same email used in the query
+
+        final brand = userData['defaultBrand'];
+        final model = userData['defaultModel'];
         // Access other user details based on field names
-        Map<String, dynamic>? fetchUser = {'email': email, 'username': name};
+        // Map<String, dynamic>? fetchUser = {'email': email, 'username': name};
         Provider.of<chDataProvider>(context, listen: false).userEmail = email;
         Provider.of<chDataProvider>(context, listen: false).userName = name;
+
+        Provider.of<chDataProvider>(context, listen: false).defaultBrand =
+            brand;
+        Provider.of<chDataProvider>(context, listen: false).defaultModel =
+            model;
+        print('$name');
+        print('details');
+        print(Provider.of<chDataProvider>(context, listen: false).defaultBrand);
+        print(Provider.of<chDataProvider>(context, listen: false).defaultModel);
         Provider.of<chDataProvider>(context, listen: false)
             .profileFetchingDone = true;
-        print('$name');
         print('Profile Fetching is Done');
         print(Provider.of<chDataProvider>(context, listen: false)
             .profileFetchingDone);

@@ -33,20 +33,20 @@ class _CarSelectState extends State<CarSelect> {
               ],
             ),
             SizedBox(height: 20),
-            Image.asset(
-              'assets/car_select.jpg',
-              //'assets/carSelectionImages/car_select.jpg', // Replace with your image asset path
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.4,
-              fit: BoxFit.contain,
-            ),
+            // Image.asset(
+            //   'assets/car_select.jpg',
+            //   //'assets/carSelectionImages/car_select.jpg', // Replace with your image asset path
+            //   width: MediaQuery.of(context).size.width * 0.8,
+            //   height: MediaQuery.of(context).size.height * 0.4,
+            //   fit: BoxFit.contain,
+            // ),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Handle previous screen navigation
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue, // Set button color to blue

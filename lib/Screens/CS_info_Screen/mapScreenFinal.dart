@@ -991,7 +991,7 @@ class _MapScreenState extends State<MapScreen> {
     int? userInput;
     String? selectedTitle = '';
     String? selectedSecondTitle = '';
-    double currentValue = 0.0;
+    int currentValue = 0;
     String? selectedModalType; // Move the declaration here
 
     return StatefulBuilder(
@@ -1026,10 +1026,10 @@ class _MapScreenState extends State<MapScreen> {
                       Slider(
                         min: 0,
                         max: 100,
-                        value: currentValue,
+                        value: currentValue.toDouble(),
                         onChanged: (double value) {
                           setState(() {
-                            currentValue = value;
+                            currentValue = value.toInt();
                           });
                         },
                         // Customize the appearance of the slider
@@ -1054,6 +1054,19 @@ class _MapScreenState extends State<MapScreen> {
                             value: 'default car',
                             groupValue: selectedModalType,
                             onChanged: (String? value) {
+                              Provider.of<chDataProvider>(context,
+                                      listen: false)
+                                  .vehBrand = Provider.of<chDataProvider>(
+                                      context,
+                                      listen: false)
+                                  .defaultBrand;
+
+                              Provider.of<chDataProvider>(context,
+                                      listen: false)
+                                  .vehModel = Provider.of<chDataProvider>(
+                                      context,
+                                      listen: false)
+                                  .defaultModel;
                               setState(() {
                                 selectedModalType = value!;
                               });
@@ -1077,6 +1090,44 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                         ],
                       ),
+
+                      if (selectedModalType == 'default car') ...[
+                        Wrap(
+                          children: [
+                            // Generate chip tiles for titles
+
+                            ChoiceChip(
+                              label: Text(
+                                '${Provider.of<chDataProvider>(context, listen: false).defaultBrand}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.black,
+                              selected: false,
+                              onSelected: (_) {}, // Non-selectable
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                side:
+                                    BorderSide(color: Colors.blue, width: 1.0),
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                            ChoiceChip(
+                              label: Text(
+                                '${Provider.of<chDataProvider>(context, listen: false).defaultModel}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.black,
+                              selected: false,
+                              onSelected: (_) {}, // Non-selectable
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                side:
+                                    BorderSide(color: Colors.blue, width: 1.0),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
 
                       // Show "Select Model" and "Select Brand" only when "Extra" is selected
                       if (selectedModalType == 'Another Car') ...[
@@ -1519,7 +1570,7 @@ class _MapScreenState extends State<MapScreen> {
                   onPressed: () {
                     setState(() {
                       // Reset all values
-                      currentValue = 0.0;
+                      currentValue = 0;
                       userInput = null;
                       selectedTitle = '';
                       selectedSecondTitle = '';

@@ -1,5 +1,7 @@
+import 'package:effecient/Providers/chData.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'carModelSelection.dart';
 
 class CarSelection extends StatefulWidget {
@@ -9,15 +11,14 @@ class CarSelection extends StatefulWidget {
 
 class _CarSelectionState extends State<CarSelection> {
   late TextEditingController searchController;
-  late List<String> vehicleData;
+  List<String> vehicleData = ['BMW', 'Honda', 'Tesla'];
   String _selectedManufacturer = "";
 
   @override
   void initState() {
+    // fetchManufacturers();
     super.initState();
     searchController = TextEditingController();
-    vehicleData = [];
-    fetchManufacturers();
   }
 
   void fetchManufacturers() async {
@@ -65,68 +66,107 @@ class _CarSelectionState extends State<CarSelection> {
         ),
         backgroundColor: Colors.black87,
       ),
-      body: Container(
-        color: Colors.black87, // Set background color to black
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(
-                    255, 210, 209, 209), // Set background color to grey
-                borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: Colors.blue, width: 2.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: (query) {
-                    searchManufacturer(query);
-                    setState(() {
-                      _selectedManufacturer = "";
-                    });
+      body: Column(
+        children: [
+          Container(
+            color: Color.fromARGB(
+                255, 255, 255, 255), // Set background color to black
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                ListView.separated(
+                  shrinkWrap: true, // Allow ListView to size itself
+                  itemCount: vehicleData.length,
+
+                  separatorBuilder: (BuildContext context, int index) =>
+                      Divider(),
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text(vehicleData[index]),
+                      selected: _selectedManufacturer == vehicleData[index],
+                      selectedTileColor: Color.fromARGB(255, 4, 207, 21),
+                      onTap: () {
+                        setState(() {
+                          _selectedManufacturer =
+                              vehicleData[index]; // Set the selected brand
+                        });
+                      },
+                    );
                   },
-                  decoration: InputDecoration(
-                    labelText: 'Search Manufacturer',
-                    border: InputBorder.none,
-                  ),
                 ),
-              ),
+                // Container(
+                //   child: Expanded(
+                //     child: ListView.separated(
+                //       shrinkWrap: true, // Allow ListView to size itself
+                //       itemCount: vehicleData.length,
+                //       separatorBuilder: (context, index) => Divider(
+                //         color: Colors.white, // Set separator color to white
+                //       ),
+                //       itemBuilder: (context, index) {
+                //         return ListTile(
+                //           title: Text(
+                //             '${vehicleData[index]}',
+                //             style: TextStyle(
+                //                 color: Colors.white), // Set text color to white
+                //           ),
+                //           onTap: () {
+                //             setState(() {
+                //               _selectedManufacturer = vehicleData[index];
+
+                //               print(_selectedManufacturer);
+                //             });
+                //             // Navigator.push(
+                //             //   context,
+                //             //   MaterialPageRoute(
+                //             // builder: (context) => CarModelSelection(
+                //             //   selectedManufacturer: _selectedManufacturer,
+                //             // ),
+                //             //   ),
+                //             // );
+                //           },
+                //         );
+                //       },
+                //     ),
+                //   ),
+                // ),
+              ],
             ),
-            SizedBox(height: 16),
-            Expanded(
-              child: ListView.separated(
-                itemCount: vehicleData.length,
-                separatorBuilder: (context, index) => Divider(
-                  color: Colors.white, // Set separator color to white
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to the previous screen
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
                 ),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(
-                      vehicleData[index],
-                      style: TextStyle(
-                          color: Colors.white), // Set text color to white
+                child: Text('Previous',
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to the Next screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CarModelSelection(
+                        selectedManufacturer: _selectedManufacturer,
+                      ),
                     ),
-                    onTap: () {
-                      setState(() {
-                        _selectedManufacturer = vehicleData[index];
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CarModelSelection(
-                            selectedManufacturer: _selectedManufacturer,
-                          ),
-                        ),
-                      );
-                    },
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                child: Text('Next',
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
-            ),
-          ],
-        ),
+            ],
+          )
+        ],
       ),
     );
   }
