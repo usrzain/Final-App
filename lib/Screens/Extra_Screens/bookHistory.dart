@@ -3,6 +3,8 @@
 import 'package:effecient/Providers/chData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookHistory extends StatefulWidget {
   const BookHistory({Key? key}) : super(key: key);
@@ -12,6 +14,15 @@ class BookHistory extends StatefulWidget {
 }
 
 class _BookHistoryState extends State<BookHistory> {
+  String formatTimestamp(Timestamp timestamp) {
+    // Convert Firestore Timestamp to DateTime
+    DateTime dateTime = timestamp.toDate();
+    // Format the timestamp as a string
+    String formattedDateTime =
+        DateFormat('MMMM d, y hh:mm:ss a').format(dateTime);
+    return formattedDateTime;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,7 +145,7 @@ class _BookHistoryState extends State<BookHistory> {
                                               color: Colors.green), // Cost icon
                                           const SizedBox(width: 4),
                                           Text(
-                                            'Booked on: ${dataProvider.bookings.entries.elementAt(index).value['Booked on'].toString()}',
+                                            'Booked on: ${formatTimestamp(dataProvider.bookings.entries.elementAt(index).value['Booked on'])}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.normal,
                                               color: Colors.white,

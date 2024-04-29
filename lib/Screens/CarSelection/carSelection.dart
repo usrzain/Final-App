@@ -1,4 +1,5 @@
 import 'package:effecient/Providers/chData.dart';
+import 'package:effecient/navBar/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,13 @@ class _CarSelectionState extends State<CarSelection> {
   late TextEditingController searchController;
   List<String> vehicleData = ['BMW', 'Honda', 'Tesla'];
   String _selectedManufacturer = "";
+
+// Map car brands to their corresponding logo asset paths
+  final Map<String, String> brandLogoPaths = {
+    'BMW': 'assets/bmw.png',
+    'Honda': 'assets/honda.png',
+    'Tesla': 'assets/tesla__.png',
+  };
 
   @override
   void initState() {
@@ -62,111 +70,96 @@ class _CarSelectionState extends State<CarSelection> {
       appBar: AppBar(
         title: Text(
           'Select Manufacturers',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.blueAccent),
         ),
-        backgroundColor: Colors.black87,
+        backgroundColor: Colors.black,
       ),
-      body: Column(
-        children: [
-          Container(
-            color: Color.fromARGB(
-                255, 255, 255, 255), // Set background color to black
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                ListView.separated(
-                  shrinkWrap: true, // Allow ListView to size itself
-                  itemCount: vehicleData.length,
-
-                  separatorBuilder: (BuildContext context, int index) =>
-                      Divider(),
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      title: Text(vehicleData[index]),
-                      selected: _selectedManufacturer == vehicleData[index],
-                      selectedTileColor: Color.fromARGB(255, 4, 207, 21),
-                      onTap: () {
-                        setState(() {
-                          _selectedManufacturer =
-                              vehicleData[index]; // Set the selected brand
-                        });
-                      },
-                    );
-                  },
+      body: Container(
+        color: Colors.black,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.separated(
+                itemCount: vehicleData.length,
+                separatorBuilder: (BuildContext context, int index) => Divider(
+                  indent: 12,
+                  endIndent: 12,
+                  thickness: 2,
                 ),
-                // Container(
-                //   child: Expanded(
-                //     child: ListView.separated(
-                //       shrinkWrap: true, // Allow ListView to size itself
-                //       itemCount: vehicleData.length,
-                //       separatorBuilder: (context, index) => Divider(
-                //         color: Colors.white, // Set separator color to white
-                //       ),
-                //       itemBuilder: (context, index) {
-                //         return ListTile(
-                //           title: Text(
-                //             '${vehicleData[index]}',
-                //             style: TextStyle(
-                //                 color: Colors.white), // Set text color to white
-                //           ),
-                //           onTap: () {
-                //             setState(() {
-                //               _selectedManufacturer = vehicleData[index];
+                itemBuilder: (BuildContext context, int index) {
+                  final brand = vehicleData[index];
+                  final logoPath = brandLogoPaths[brand]; // Get logo path
 
-                //               print(_selectedManufacturer);
-                //             });
-                //             // Navigator.push(
-                //             //   context,
-                //             //   MaterialPageRoute(
-                //             // builder: (context) => CarModelSelection(
-                //             //   selectedManufacturer: _selectedManufacturer,
-                //             // ),
-                //             //   ),
-                //             // );
-                //           },
-                //         );
-                //       },
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to the previous screen
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                ),
-                child: Text('Previous',
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to the Next screen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CarModelSelection(
-                        selectedManufacturer: _selectedManufacturer,
-                      ),
+                  return ListTile(
+                    title: Row(
+                      children: [
+                        // Display logo if available
+                        if (logoPath != null)
+                          Image.asset(
+                            logoPath,
+                            width: 30,
+                            height: 30,
+                            //color: white,
+                            fit: BoxFit.contain, // Adjust size as needed
+                          ),
+                        SizedBox(
+                            width: 10), // Add spacing between logo and text
+                        Text(
+                          brand,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Spacer(),
+                        if (_selectedManufacturer == vehicleData[index])
+                          Icon(Icons.check, color: Colors.green),
+                      ],
                     ),
+                    selected: _selectedManufacturer == vehicleData[index],
+                    selectedTileColor: Colors.blueAccent,
+                    onTap: () {
+                      setState(() {
+                        _selectedManufacturer = vehicleData[index];
+                      });
+                    },
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                ),
-                child: Text('Next',
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
-            ],
-          )
-        ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: Text(
+                    'Previous',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CarModelSelection(
+                          selectedManufacturer: _selectedManufacturer,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: Text(
+                    'Next',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

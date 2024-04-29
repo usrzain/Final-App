@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:geolocator/geolocator.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Charging Station class
 
@@ -93,7 +94,7 @@ class chDataProvider extends ChangeNotifier {
   bool _hasSeenTheIntro = false;
   bool _initialLoadingComplete = false;
   String? _userEmail;
-  Map<String, dynamic>? _userData = {};
+  Map<String, dynamic> _userData = {};
   bool _signInComplete = false;
   bool _signInProgress = false;
   String? _userName;
@@ -136,7 +137,7 @@ class chDataProvider extends ChangeNotifier {
   bool get hasSeenTheIntro => _hasSeenTheIntro;
   bool get initialLoadingComplete => _initialLoadingComplete;
   String? get userEmail => _userEmail;
-  Map<String, dynamic>? get userData => _userData;
+  Map<String, dynamic> get userData => _userData;
   bool get signInComplete => _signInComplete;
   bool get signInProgress => _signInComplete;
   String? get userName => _userName;
@@ -260,6 +261,11 @@ class chDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set userData(Map<String, dynamic> value) {
+    _userData = value;
+    notifyListeners();
+  }
+
   set userEmail(String? value) {
     _userEmail = value;
     notifyListeners();
@@ -282,6 +288,16 @@ class chDataProvider extends ChangeNotifier {
 
   set currentLocation(LocationData? value) {
     _currentLocation = value;
+    notifyListeners();
+  }
+
+  set favStations(Map<String, dynamic> value) {
+    _favStations = value;
+    notifyListeners();
+  }
+
+  set bookings(Map<String, dynamic> value) {
+    _bookings = value;
     notifyListeners();
   }
 
@@ -442,6 +458,7 @@ class chDataProvider extends ChangeNotifier {
           'time': time
         }
       };
+      saveToUserDB(newData, 'book');
       bookings.addAll(newData);
       return true;
     } catch (error) {
@@ -465,10 +482,77 @@ class chDataProvider extends ChangeNotifier {
           'cost': entry.value['cost']
         }
       };
+      saveToUserDB(newData, 'fav');
       favStations.addAll(newData);
       print('adding new data ');
       print(favStations);
       return true;
+    }
+  }
+
+  void saveToUserDB(newData, flag) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    try {
+      // Query for the document with the specified email
+      QuerySnapshot querySnapshot =
+          await users.where('email', isEqualTo: userEmail).get();
+
+      // Check if any documents match the query
+      if (querySnapshot.docs.isNotEmpty) {
+        // Assuming there's only one document per email, get the reference to that document
+        DocumentReference userDocRef = querySnapshot.docs.first.reference;
+        // Get the document snapshot using the reference
+        DocumentSnapshot userDoc = await userDocRef.get();
+        Map<String, dynamic>? userData =
+            userDoc.data() as Map<String, dynamic>?;
+
+        // --
+        // --
+        // Check if userData is not null and 'favorites' key exists
+        if (userData != null) {
+          if (flag == 'fav') {
+            if (userData.containsKey('favorites')) {
+              // 'favorites' key exists, print the user data
+
+              List<dynamic> favorites = List.from(userData['favorites']);
+              favorites.add(newData);
+              await userDocRef.update({'favorites': favorites});
+              print(userData);
+              print('Added newData to existing favorites.');
+            } else {
+              // 'favorites' key does not exist
+              await userDocRef.update({
+                'favorites': [newData]
+              });
+              print(userData);
+
+              print('Created new favorites with newData.');
+            }
+          } else {
+            if (userData.containsKey('bookings')) {
+              // 'bookings' key exists, print the user data
+
+              List<dynamic> bookings = List.from(userData['bookings']);
+              bookings.add(newData);
+              await userDocRef.update({'bookings': bookings});
+              print(userData);
+              print('Added newData to existing favorites.');
+            } else {
+              // 'bookings' key does not exist
+              await userDocRef.update({
+                'bookings': [newData]
+              });
+              print(userData);
+
+              print('Created new bookings with newData.');
+            }
+          }
+        }
+      } else {
+        print('No user found with the specified email.');
+      }
+    } catch (e) {
+      print('Error adding user defaults: $e');
     }
   }
 }

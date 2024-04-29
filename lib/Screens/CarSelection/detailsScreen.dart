@@ -53,9 +53,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
       appBar: AppBar(
         title: Text(
           'Selected EV',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.blueAccent),
         ),
-        backgroundColor: Colors.black87,
+        backgroundColor: Colors.black,
       ),
       body: Container(
         color: Colors.black87,
@@ -66,9 +66,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
               margin: EdgeInsets.all(16.0),
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.grey[700],
+                color: Colors.black,
                 borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: Colors.blue, width: 2.0),
+                border: Border.all(color: Colors.blue, width: 0.8),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,10 +89,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Back')),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: Text('Back',
+                      style: TextStyle(fontSize: 16, color: Colors.white)),
+                ),
                 ElevatedButton(
                   onPressed: () {
                     Provider.of<chDataProvider>(context, listen: false)
@@ -119,10 +124,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       ),
                     );
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
                   child: Text('Select',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 44, 5, 219))),
+                      style: TextStyle(fontSize: 16, color: Colors.white)),
                 )
               ],
             ),

@@ -39,6 +39,14 @@ class _LoginPageState extends State<LoginPage> {
 
         final brand = userData['defaultBrand'];
         final model = userData['defaultModel'];
+        // final contFav = userData.containsKey('favorites');
+        // final contBook = userData.containsKey('bookings');
+
+        Provider.of<chDataProvider>(context, listen: false).userData =
+            Map.from(userData);
+
+        print(userData.runtimeType);
+
         // Access other user details based on field names
         // Map<String, dynamic>? fetchUser = {'email': email, 'username': name};
         Provider.of<chDataProvider>(context, listen: false).userEmail = email;
@@ -52,11 +60,11 @@ class _LoginPageState extends State<LoginPage> {
         print('details');
         print(Provider.of<chDataProvider>(context, listen: false).defaultBrand);
         print(Provider.of<chDataProvider>(context, listen: false).defaultModel);
+
         Provider.of<chDataProvider>(context, listen: false)
             .profileFetchingDone = true;
         print('Profile Fetching is Done');
-        print(Provider.of<chDataProvider>(context, listen: false)
-            .profileFetchingDone);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

@@ -53,7 +53,7 @@ void main() async {
       initialScreen: SplashScreen(),
     ), // Your app's main widget
   ));
-  DependencyInjection.init();
+  // DependencyInjection.init();
   // runApp(ChangeNotifierProvider(
   //   // Create an instance of YourDataProvider
   //   create: (context) => chDataProvider(),

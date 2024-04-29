@@ -30,6 +30,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -79,10 +80,46 @@ class _MapScreenState extends State<MapScreen> {
     _favListLocal = _prefs?.getStringList('favList');
   }
 
+  Map<String, dynamic> convertListToMap(List<dynamic> list) {
+    Map<String, dynamic> resultMap = {};
+    for (var item in list) {
+      if (item is Map<String, dynamic>) {
+        item.forEach((key, value) {
+          resultMap[key] = value;
+        });
+      }
+    }
+    return resultMap;
+  }
+
+  void setFavBook(chDataProvider localprovider) {
+    if (localprovider.userData.containsKey('favorites')) {
+      print('Yes Exists ');
+      // print(userData['favorites']);
+      localprovider.favStations =
+          convertListToMap(localprovider.userData['favorites']);
+      print(localprovider.favStations);
+    } else {
+      print('dont Exists');
+    }
+
+    if (localprovider.userData.containsKey('bookings')) {
+      print('Yes Exists ');
+
+      localprovider.bookings =
+          convertListToMap(localprovider.userData['bookings']);
+      print(localprovider.bookings);
+    } else {
+      print('dont Exists');
+    }
+  }
+
   @override
   void initState() {
     chDataProvider localprovider =
         Provider.of<chDataProvider>(context, listen: false);
+
+    // localprovider.favStations = localprovider.userData['']
     _initializePrefs();
     addCustomIcon();
     super.initState();
@@ -112,7 +149,7 @@ class _MapScreenState extends State<MapScreen> {
 
           // print(aLLCS);
           // print(currentLocation);
-
+          setFavBook(localprovider);
           length = 20;
         });
       }
@@ -1669,23 +1706,65 @@ class _MapScreenState extends State<MapScreen> {
 
 // Function to show the alert dialog
   void _showAlertDialog(BuildContext context, String title, String content) {
-    showDialog(
+    AwesomeDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text('OK'),
-            ),
-          ],
+      dialogType: DialogType.info,
+      borderSide: const BorderSide(
+        color: Colors.green,
+        width: 2,
+      ),
+      width: 280,
+      buttonsBorderRadius: const BorderRadius.all(
+        Radius.circular(2),
+      ),
+      dismissOnTouchOutside: true,
+      dismissOnBackKeyPress: false,
+      onDismissCallback: (type) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Dismissed by $type'),
+          ),
         );
       },
-    );
+      headerAnimationLoop: false,
+      animType: AnimType.bottomSlide,
+      title: title,
+      desc: content,
+      showCloseIcon: true,
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {},
+    ).show();
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return AlertDialog(
+    //       title: Text(title),
+    //       content: Text(content),
+    //       actions: <Widget>[
+    //         TextButton(
+    //           onPressed: () {
+    //             Navigator.of(context).pop(); // Close the dialog
+    //           },
+    //           child: Text('OK'),
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
+    // showGeneralDialog(
+    //     context: context,
+    //     pageBuilder: (context, animation1, animation2) {
+    //       return Container();
+    //     },
+    //     transitionBuilder: (context, a1, a2, widget) {
+    //       return AlertDialog(
+    //           title: Text(title),
+    //           content: Text(content),
+    //           shape: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(16.0),
+    //             borderSide: BorderSide.none,
+    //           ));
+    //     });
   }
 }
 

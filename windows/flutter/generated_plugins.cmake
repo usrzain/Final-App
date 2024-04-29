@@ -4,13 +4,13 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
-  connectivity_plus
   file_selector_windows
   firebase_auth
   firebase_core
   firebase_storage
   maps_launcher
   permission_handler_windows
+  rive_common
   url_launcher_windows
 )
 
