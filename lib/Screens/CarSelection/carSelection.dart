@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:effecient/Providers/chData.dart';
 import 'package:effecient/navBar/colors/colors.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class _CarSelectionState extends State<CarSelection> {
   final Map<String, String> brandLogoPaths = {
     'BMW': 'assets/bmw.png',
     'Honda': 'assets/honda.png',
-    'Tesla': 'assets/tesla__.png',
+    'Tesla': 'assets/tesla.png',
   };
 
   @override
@@ -139,14 +140,22 @@ class _CarSelectionState extends State<CarSelection> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CarModelSelection(
-                          selectedManufacturer: _selectedManufacturer,
+                    if (_selectedManufacturer == "") {
+                      CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.error,
+                        text: "Please choose Vehicle brand",
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CarModelSelection(
+                            selectedManufacturer: _selectedManufacturer,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,

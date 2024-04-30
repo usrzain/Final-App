@@ -33,6 +33,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
+    chDataProvider localprovider =
+        Provider.of<chDataProvider>(context, listen: false);
     print(Provider.of<chDataProvider>(context, listen: false).userName);
     super.initState();
     _tabController = TabController(length: navBtn.length, vsync: this);
@@ -82,6 +84,8 @@ class _HomePageState extends State<HomePage>
   }
 
   AnimatedContainer navigationBar() {
+    chDataProvider localprovider =
+        Provider.of<chDataProvider>(context, listen: false);
     double screenWidth = MediaQuery.of(context).size.width;
 
     return AnimatedContainer(
@@ -118,6 +122,8 @@ class _HomePageState extends State<HomePage>
   }
 
   SizedBox iconBtn(int i, double screenWidth) {
+    chDataProvider localprovider =
+        Provider.of<chDataProvider>(context, listen: false);
     bool isActive = selectBtn == i ? true : false;
     double tabWidth = screenWidth / navBtn.length;
 

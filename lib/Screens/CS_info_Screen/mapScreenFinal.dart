@@ -31,6 +31,7 @@ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cool_alert/cool_alert.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -491,19 +492,11 @@ class _MapScreenState extends State<MapScreen> {
                                       false) {
                                 localprovider.addFavoriteStation(title);
                               } else {
-                                return showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                          title: Text('It is Already present'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: Text('OK'),
-                                            ),
-                                          ]);
-                                    });
+                                CoolAlert.show(
+                                  context: context,
+                                  type: CoolAlertType.info,
+                                  text: "Already present in favorites",
+                                );
                               }
                             },
                           ),
@@ -786,8 +779,15 @@ class _MapScreenState extends State<MapScreen> {
                                     '/reservations',
                                   );
                                 } else {
-                                  _showAlertDialog(context, 'Alert !! ',
-                                      'Please Click on Filter to enter necessary information ');
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    text: 'Please use filter first ! ',
+                                    autoCloseDuration:
+                                        const Duration(seconds: 5),
+                                  );
+                                  // _showAlertDialog(context, 'Alert !! ',
+                                  //     'Please Click on Filter to enter necessary information ');
                                 }
                               },
                               style: ButtonStyle(
@@ -1005,12 +1005,16 @@ class _MapScreenState extends State<MapScreen> {
                                     ],
                                   ),
                                 ),
-                                Positioned(
-                                  right: 20.0,
-                                  top: 20.0,
-                                  child: Text(
-                                      'The Range is ${dataProvider.range}'),
-                                ),
+                                // Positioned(
+                                //   right: 20.0,
+                                //   top: 60.0,
+                                //   child: Text(
+                                //     'The Range is ${dataProvider.range}',
+                                //     style: TextStyle(
+                                //         backgroundColor: Colors.blueAccent,
+                                //         color: Colors.black),
+                                //   ),
+                                // ),
                               ],
                             )
                           : loadingWidget(context, 'Polylines');
@@ -1486,16 +1490,9 @@ class _MapScreenState extends State<MapScreen> {
                           ElevatedButton(
                             onPressed: () {
                               if (currentValue != 0.0) {
-                                Navigator.pop(context);
-                                Provider.of<chDataProvider>(context,
-                                        listen: false)
-                                    .showReset = false;
                                 Provider.of<chDataProvider>(context,
                                         listen: false)
                                     .stateOfCharge = currentValue.toInt();
-                                Provider.of<chDataProvider>(context,
-                                        listen: false)
-                                    .allowToNavigate = true;
 
                                 if (selectedModalType == 'Another Car') {
                                   // print(selectedTitle);
@@ -1517,55 +1514,77 @@ class _MapScreenState extends State<MapScreen> {
                                           .defaultModel;
                                 }
 
-                                final dataProvider = context.read<
-                                    chDataProvider>(); // Access provider using context
+                                if (selectedTitle != '' &&
+                                    selectedSecondTitle != '') {
+                                  Navigator.pop(context);
+                                  Provider.of<chDataProvider>(context,
+                                          listen: false)
+                                      .showReset = false;
+                                  Provider.of<chDataProvider>(context,
+                                          listen: false)
+                                      .allowToNavigate = true;
+                                  final dataProvider = context.read<
+                                      chDataProvider>(); // Access provider using context
 
-                                // Calculating the Range
+                                  // Calculating the Range
 
-                                List<Map<String, dynamic>> electricVehicles = [
-                                  {
-                                    'brand': 'BMW',
-                                    'model': '2019',
-                                    'range': 50.0
-                                  },
-                                  {
-                                    'brand': 'Honda',
-                                    'model': '2018',
-                                    'range': 40.0
-                                  },
-                                  {
-                                    'brand': 'Tesla',
-                                    'model': '2020',
-                                    'range': 60.0
-                                  },
-                                ];
+                                  List<Map<String, dynamic>> electricVehicles =
+                                      [
+                                    {
+                                      'brand': 'BMW',
+                                      'model': '2019',
+                                      'range': 50.0
+                                    },
+                                    {
+                                      'brand': 'Honda',
+                                      'model': '2018',
+                                      'range': 40.0
+                                    },
+                                    {
+                                      'brand': 'Tesla',
+                                      'model': '2020',
+                                      'range': 60.0
+                                    },
+                                  ];
 
-                                double totalRange = 0.0;
+                                  double totalRange = 0.0;
 
-                                for (var vehicle in electricVehicles) {
-                                  // finding the Brand and get the total Range of it
+                                  for (var vehicle in electricVehicles) {
+                                    // finding the Brand and get the total Range of it
 
-                                  if (selectedTitle == vehicle['brand']) {
-                                    totalRange = vehicle['range'];
+                                    if (selectedTitle == vehicle['brand']) {
+                                      totalRange = vehicle['range'];
+                                    }
                                   }
+
+                                  double calculate_Range =
+                                      currentValue / 100 * totalRange;
+
+                                  dataProvider.range = calculate_Range;
+
+                                  dataProvider.showRange =
+                                      calculate_Range * 1000;
+
+                                  requestForBestCS(
+                                      currentLAT,
+                                      currentLONG,
+                                      currentValue,
+                                      selectedTitle,
+                                      selectedSecondTitle);
+                                } else {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    text:
+                                        "Please Select you Electric Vehicle for Navigation",
+                                  );
                                 }
-
-                                double calculate_Range =
-                                    currentValue / 100 * totalRange;
-
-                                dataProvider.range = calculate_Range;
-
-                                dataProvider.showRange = calculate_Range * 1000;
-
-                                requestForBestCS(
-                                    currentLAT,
-                                    currentLONG,
-                                    currentValue,
-                                    selectedTitle,
-                                    selectedSecondTitle);
                               } else {
-                                _showAlertDialog(context, 'Alert ! ',
-                                    'No Charge % or State of Charge selected');
+                                CoolAlert.show(
+                                  context: context,
+                                  type: CoolAlertType.error,
+                                  text: "No charge % is selected ",
+                                );
                               }
 
                               // Update loading2 within the Future

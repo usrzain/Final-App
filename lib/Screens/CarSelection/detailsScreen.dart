@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:effecient/Auth/HomePage.dart';
 import 'package:effecient/Providers/chData.dart';
 import 'package:flutter/material.dart';
@@ -100,29 +101,43 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Provider.of<chDataProvider>(context, listen: false)
-                        .defaultBrand = widget.selectedManufacturer;
-                    Provider.of<chDataProvider>(context, listen: false)
-                        .defaultModel = widget.selectedModel;
-                    print(Provider.of<chDataProvider>(context, listen: false)
-                        .defaultBrand);
-                    print(Provider.of<chDataProvider>(context, listen: false)
-                        .defaultModel);
-                    String Email =
-                        Provider.of<chDataProvider>(context, listen: false)
-                            .userEmail!;
+                    CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.confirm,
+                        text: "Are you sure with selection",
+                        confirmBtnText: "Yes",
+                        cancelBtnText: "No",
+                        showCancelBtn: true,
+                        onCancelBtnTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        onConfirmBtnTap: () {
+                          Provider.of<chDataProvider>(context, listen: false)
+                              .defaultBrand = widget.selectedManufacturer;
+                          Provider.of<chDataProvider>(context, listen: false)
+                              .defaultModel = widget.selectedModel;
+                          print(Provider.of<chDataProvider>(context,
+                                  listen: false)
+                              .defaultBrand);
+                          print(Provider.of<chDataProvider>(context,
+                                  listen: false)
+                              .defaultModel);
+                          String Email = Provider.of<chDataProvider>(context,
+                                  listen: false)
+                              .userEmail!;
 
-                    // Setting the choosen data to user's DB in Firebase
+                          // Setting the choosen data to user's DB in Firebase
 
-                    addUserDefaults(Email, widget.selectedManufacturer,
-                        widget.selectedModel);
-                    // Navigate to the next screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomePage(),
-                      ),
-                    );
+                          addUserDefaults(Email, widget.selectedManufacturer,
+                              widget.selectedModel);
+                          // Navigate to the next screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ),
+                          );
+                        });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -150,6 +165,32 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
       ),
     );
+  }
+
+  void successAlertAndNavigate() async {
+    // Show alert with a delay
+    // Future.delayed(Duration(seconds: 3), () {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('Alert message!'),
+    //       duration: Duration(seconds: 2), // Alert duration
+    //     ),
+    //   );
+    // });
+    // CoolAlert.show(
+    //     context: context,
+    //     type: CoolAlertType.confirm,
+    //     text: "Please choose Vehicle Model",
+    //     confirmBtnText: "OK",
+    //     showCancelBtn: false,
+    //     onConfirmBtnTap: () {
+    //       Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //           builder: (context) => const HomePage(),
+    //         ),
+    //       );
+    //     });
   }
 
   // Function to add defaultBrand and defaultModel to a user document

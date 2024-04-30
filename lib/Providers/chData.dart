@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:geolocator/geolocator.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -66,6 +67,22 @@ class FavStationData {
       {required this.name, required this.address, required this.cost});
 }
 
+// Global Navbar
+class navBar {
+  final int id;
+  final dynamic
+      iconOrImagePath; // Use dynamic type to allow both Icon and String
+  final String name;
+
+  navBar({
+    required this.id,
+    required this.iconOrImagePath,
+    required this.name,
+  });
+
+  get originalColor => null;
+}
+
 String _generateUniqueKey() {
   // Implement logic to generate a unique key (e.g., using a counter)
   int counter = 0;
@@ -119,6 +136,17 @@ class chDataProvider extends ChangeNotifier {
   String _defaultModel = '';
   List<Map<String, dynamic>> _brandList = [];
   List<Map<String, dynamic>> _modelList = [];
+  List<navBar> _navBtn = [
+    navBar(id: 0, iconOrImagePath: Icons.home, name: 'Home'),
+    navBar(id: 1, iconOrImagePath: Icons.bookmark, name: 'Saved'),
+    navBar(id: 2, iconOrImagePath: 'assets/charger.png', name: ''),
+    navBar(
+        id: 3,
+        iconOrImagePath: Icons.calendar_month_outlined,
+        name: 'Bookings'),
+    navBar(id: 4, iconOrImagePath: Icons.person, name: 'Me'),
+  ];
+  int _selectedTabIndex = 0;
 
   // Getter to access the data
   bool get loading => _loading;
@@ -163,6 +191,8 @@ class chDataProvider extends ChangeNotifier {
   String get defaultModel => _defaultModel;
   List<Map<String, dynamic>> get brandList => _brandList;
   List<Map<String, dynamic>> get modelList => _modelList;
+  List<navBar> get navBtn => _navBtn;
+  int get selectedTabIndex => _selectedTabIndex;
 
   int value = 1; // Initial value
 
@@ -374,6 +404,11 @@ class chDataProvider extends ChangeNotifier {
   set modelList(value) {
     _modelList = value;
     notifyListeners();
+  }
+
+  void setSelectedTabIndex(int index) {
+    _selectedTabIndex = index;
+    notifyListeners(); // Notify listeners about the change
   }
 
   double getKwhForOnePercent() {

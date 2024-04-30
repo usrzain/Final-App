@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:effecient/Providers/chData.dart';
 import 'package:effecient/Screens/CarSelection/detailsScreen.dart';
 import 'package:flutter/material.dart';
@@ -107,15 +108,23 @@ class _CarModelSelectionState extends State<CarModelSelection> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailsScreen(
-                          selectedManufacturer: widget.selectedManufacturer,
-                          selectedModel: selectedModel,
+                    if (selectedModel == "") {
+                      CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.error,
+                        text: "Please choose Vehicle Model",
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailsScreen(
+                            selectedManufacturer: widget.selectedManufacturer,
+                            selectedModel: selectedModel,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,

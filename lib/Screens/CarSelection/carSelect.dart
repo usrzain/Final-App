@@ -21,9 +21,9 @@ class _CarSelectState extends State<CarSelect> {
           elevation: 2, // Add a small shadow
           title: Text(
             'Select Your Car',
-            style: TextStyle(fontSize: 40, color: Colors.blueAccent),
+            style: TextStyle(fontSize: 30, color: Colors.blueAccent),
           ),
-          centerTitle: true, // Align title text to the center
+          centerTitle: false, // Align title text to the center
         ),
       ),
       backgroundColor: Colors.black, // Set background color to black
@@ -35,21 +35,24 @@ class _CarSelectState extends State<CarSelect> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
-                  height: 70,
-                  child: DefaultTextStyle(
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 4, 164, 73),
-                        fontSize: 30,
-                        fontWeight: FontWeight.w100),
-                    child: AnimatedTextKit(
-                      repeatForever: false,
-                      isRepeatingAnimation: false,
-                      animatedTexts: [
-                        TypewriterAnimatedText(
-                          'Personalize your experience\n'
-                          'by adding a vehicle',
-                        ),
-                      ],
+                  height: 100,
+                  child: Center(
+                    child: DefaultTextStyle(
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 4, 164, 73),
+                          fontSize: 30,
+                          fontWeight: FontWeight.w300),
+                      child: AnimatedTextKit(
+                        repeatForever: false,
+                        isRepeatingAnimation: false,
+                        animatedTexts: [
+                          TypewriterAnimatedText(
+                            'Personalize your \n'
+                            'experience by adding \n'
+                            'your vehicle',
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

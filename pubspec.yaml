@@ -50,6 +50,8 @@ dependencies:
   animated_text_kit: ^4.2.2
   intl: ^0.19.0
   awesome_dialog: ^3.2.0
+  cool_alert: ^2.0.1
+  
 
 dev_dependencies:
   flutter_test:

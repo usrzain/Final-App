@@ -267,6 +267,7 @@
 // }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:effecient/Auth/loginPage.dart';
 import 'package:effecient/Providers/chData.dart';
 import 'package:effecient/Screens/CS_info_Screen/extraFun.dart';
@@ -444,7 +445,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(width: 5),
                         Text(
-                          "BMW 2018",
+                          "${dataProvider.defaultBrand} ${dataProvider.defaultModel}",
                           style: TextStyle(color: Colors.grey, fontSize: 16.0),
                         ),
                       ],
@@ -529,12 +530,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Handle action based on title (e.g., navigate to settings screen)
                       switch (title) {
                         case 'Settings':
-                          // Navigate to the Settings screen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CarSelect()),
-                          );
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: Colors.blue,
+                                          width: 0.7), // Blue border color
+                                      borderRadius: BorderRadius.circular(
+                                          10.0), // Adjust border radius as needed
+                                    ),
+                                    backgroundColor: Colors.black,
+                                    content: openFilterModal(context),
+                                  ));
                           print("Clicked on $title");
                           break;
                         case 'Help':
@@ -570,6 +578,443 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     });
+  }
+
+  Widget openFilterModal(BuildContext context) {
+    int? userInput;
+    String? selectedTitle = '';
+    String? selectedSecondTitle = '';
+    int currentValue = 0;
+    String? selectedModalType; // Move the declaration here
+
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        RangeValues _currentRangeValues = const RangeValues(0, 100);
+
+        return Container(
+          color: Colors.black, // Background color
+          child: SingleChildScrollView(
+            child: Stack(children: [
+              Container(
+                //color: Colors.black, // Background color
+
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Show "Select Model" and "Select Brand" only when "Extra" is selected
+                      Text('Default EV',
+                          style: TextStyle(
+                              fontSize: 22, color: Colors.blueAccent)),
+                      SizedBox(height: 20),
+                      Text(
+                        'Select Brand :',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      Wrap(
+                        children: [
+                          // Generate chip tiles for titles
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .black, // Set permanent background color to black
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust border radius as needed
+                            ),
+                            child: Theme(
+                              data: ThemeData(
+                                  // toggleableActiveColor: Colors
+                                  //     .blue, // Set checkmark color to blue when selected
+                                  ),
+                              child: ChoiceChip(
+                                label: Text('BMW'),
+                                selected: selectedTitle == 'BMW',
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    selectedTitle = isSelected ? 'BMW' : '';
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  side: BorderSide(
+                                    color: selectedTitle == 'BMW'
+                                        ? Colors.blueAccent
+                                        : Colors
+                                            .white, // Set border color to white when not selected and blue when selected
+                                    width: selectedTitle == 'BMW'
+                                        ? 1.5
+                                        : 0.0, // Set border width to 2.0 when selected
+                                  ),
+                                ),
+                                backgroundColor: Colors
+                                    .black, // Set permanent background color to black
+                                selectedColor:
+                                    Colors.black, // Set selected color to black
+                                labelStyle: TextStyle(
+                                    color: Colors
+                                        .white), // Set label color to white
+
+                                showCheckmark:
+                                    false, // Hide the default checkmark
+                                //selectedShadowColor: Colors
+                                //.transparent, // Remove shadow when selected
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .black, // Set permanent background color to black
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust border radius as needed
+                            ),
+                            child: Theme(
+                              data: ThemeData(
+                                  // toggleableActiveColor: Colors
+                                  //     .blue, // Set checkmark color to blue when selected
+                                  ),
+                              child: ChoiceChip(
+                                label: Text('Honda'),
+                                selected: selectedTitle == 'Honda',
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    selectedTitle = isSelected ? 'Honda' : '';
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  side: BorderSide(
+                                    color: selectedTitle == 'Honda'
+                                        ? Colors.blueAccent
+                                        : Colors
+                                            .white, // Set border color to white when not selected and blue when selected
+                                    width: selectedTitle == 'Honda'
+                                        ? 1.5
+                                        : 0.0, // Set border width to 2.0 when selected
+                                  ),
+                                ),
+                                backgroundColor: Colors
+                                    .black, // Set permanent background color to black
+                                selectedColor:
+                                    Colors.black, // Set selected color to black
+                                labelStyle: TextStyle(
+                                    color: Colors
+                                        .white), // Set label color to white
+
+                                showCheckmark:
+                                    false, // Hide the default checkmark
+                                //selectedShadowColor: Colors
+                                //.transparent, // Remove shadow when selected
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .black, // Set permanent background color to black
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust border radius as needed
+                            ),
+                            child: Theme(
+                              data: ThemeData(
+                                  // toggleableActiveColor: Colors
+                                  //     .blue, // Set checkmark color to blue when selected
+                                  ),
+                              child: ChoiceChip(
+                                label: Text('Tesla'),
+                                selected: selectedTitle == 'Tesla',
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    selectedTitle = isSelected ? 'Tesla' : '';
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  side: BorderSide(
+                                    color: selectedTitle == 'Tesla'
+                                        ? Colors.blueAccent
+                                        : Colors
+                                            .white, // Set border color to white when not selected and blue when selected
+                                    width: selectedTitle == 'Tesla'
+                                        ? 1.5
+                                        : 0.0, // Set border width to 2.0 when selected
+                                  ),
+                                ),
+                                backgroundColor: Colors
+                                    .black, // Set permanent background color to black
+                                selectedColor:
+                                    Colors.black, // Set selected color to black
+                                labelStyle: TextStyle(
+                                    color: Colors
+                                        .white), // Set label color to white
+
+                                showCheckmark:
+                                    false, // Hide the default checkmark
+                                //selectedShadowColor: Colors
+                                //.transparent, // Remove shadow when selected
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Select Model:',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      Wrap(
+                        children: [
+                          // Generate chip tiles for titles
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .black, // Set permanent background color to black
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust border radius as needed
+                            ),
+                            child: Theme(
+                              data: ThemeData(
+                                  // toggleableActiveColor: Colors
+                                  //     .blue, // Set checkmark color to blue when selected
+                                  ),
+                              child: ChoiceChip(
+                                label: Text('2018'),
+                                selected: selectedSecondTitle == '2018',
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    selectedSecondTitle =
+                                        isSelected ? '2018' : '';
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  side: BorderSide(
+                                    color: selectedSecondTitle == '2018'
+                                        ? Colors.blueAccent
+                                        : Colors
+                                            .white, // Set border color to white when not selected and blue when selected
+                                    width: selectedSecondTitle == '2018'
+                                        ? 1.5
+                                        : 0.0, // Set border width to 2.0 when selected
+                                  ),
+                                ),
+                                backgroundColor: Colors
+                                    .black, // Set permanent background color to black
+                                selectedColor:
+                                    Colors.black, // Set selected color to black
+                                labelStyle: TextStyle(
+                                    color: Colors
+                                        .white), // Set label color to white
+
+                                showCheckmark:
+                                    false, // Hide the default checkmark
+                                //selectedShadowColor: Colors
+                                //.transparent, // Remove shadow when selected
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .black, // Set permanent background color to black
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust border radius as needed
+                            ),
+                            child: Theme(
+                              data: ThemeData(
+                                  // toggleableActiveColor: Colors
+                                  //     .blue, // Set checkmark color to blue when selected
+                                  ),
+                              child: ChoiceChip(
+                                label: Text('2019'),
+                                selected: selectedSecondTitle == '2019',
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    selectedSecondTitle =
+                                        isSelected ? '2019' : '';
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  side: BorderSide(
+                                    color: selectedSecondTitle == '2019'
+                                        ? Colors.blueAccent
+                                        : Colors
+                                            .white, // Set border color to white when not selected and blue when selected
+                                    width: selectedSecondTitle == '2019'
+                                        ? 1.5
+                                        : 0.0, // Set border width to 2.0 when selected
+                                  ),
+                                ),
+                                backgroundColor: Colors
+                                    .black, // Set permanent background color to black
+                                selectedColor:
+                                    Colors.black, // Set selected color to black
+                                labelStyle: TextStyle(
+                                    color: Colors
+                                        .white), // Set label color to white
+
+                                showCheckmark:
+                                    false, // Hide the default checkmark
+                                //selectedShadowColor: Colors
+                                //.transparent, // Remove shadow when selected
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .black, // Set permanent background color to black
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust border radius as needed
+                            ),
+                            child: Theme(
+                              data: ThemeData(
+                                  // toggleableActiveColor: Colors
+                                  //     .blue, // Set checkmark color to blue when selected
+                                  ),
+                              child: ChoiceChip(
+                                label: Text('2020'),
+                                selected: selectedSecondTitle == '2020',
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    selectedSecondTitle =
+                                        isSelected ? '2020' : '';
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  side: BorderSide(
+                                    color: selectedSecondTitle == '2020'
+                                        ? Colors.blueAccent
+                                        : Colors
+                                            .white, // Set border color to white when not selected and blue when selected
+                                    width: selectedSecondTitle == '2020'
+                                        ? 1.5
+                                        : 0.0, // Set border width to 2.0 when selected
+                                  ),
+                                ),
+                                backgroundColor: Colors
+                                    .black, // Set permanent background color to black
+                                selectedColor:
+                                    Colors.black, // Set selected color to black
+                                labelStyle: TextStyle(
+                                    color: Colors
+                                        .white), // Set label color to white
+
+                                showCheckmark:
+                                    false, // Hide the default checkmark
+                                //selectedShadowColor: Colors
+                                //.transparent, // Remove shadow when selected
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (selectedTitle != '' &&
+                                  selectedSecondTitle != '') {
+                                Navigator.pop(context);
+                                Provider.of<chDataProvider>(context,
+                                        listen: false)
+                                    .defaultBrand = selectedTitle!;
+                                Provider.of<chDataProvider>(context,
+                                        listen: false)
+                                    .defaultModel = selectedSecondTitle!;
+                                String Email = Provider.of<chDataProvider>(
+                                        context,
+                                        listen: false)
+                                    .userEmail!;
+                                addUserDefaults(Email, selectedTitle!,
+                                    selectedSecondTitle!);
+                                print(selectedSecondTitle);
+                                print(selectedTitle);
+                              } else {
+                                CoolAlert.show(
+                                  context: context,
+                                  type: CoolAlertType.error,
+                                  text:
+                                      "Please choose your Default Electric Vehicle",
+                                );
+                              }
+                              // Update loading2 within the Future
+                              // fetchData();
+
+                              // waiting for 2 seconds
+                              // await Future.delayed(const Duration(seconds: 2));
+                              // again making loading to true to show the output
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor:
+                                  Colors.black, // Set font color to white
+                              side: BorderSide(
+                                  color: Colors.blue,
+                                  width: 2), // Add blue border
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 24), // Increase padding for size
+                              textStyle:
+                                  TextStyle(fontSize: 20), // Increase font size
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    10), // Set border radius
+                              ),
+                            ),
+                            child: Text('Apply'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> addUserDefaults(
+      String userEmail, String defaultBrand, String defaultModel) async {
+    // Get a reference to the Firestore collection
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    try {
+      // Query for the document with the specified email
+      QuerySnapshot querySnapshot =
+          await users.where('email', isEqualTo: userEmail).get();
+
+      // Check if any documents match the query
+      if (querySnapshot.docs.isNotEmpty) {
+        // Assuming there's only one document per email, get the reference to that document
+        DocumentReference userDocRef = querySnapshot.docs.first.reference;
+
+        // Update the document with defaultBrand and defaultModel fields
+        await userDocRef.update({
+          'defaultBrand': defaultBrand,
+          'defaultModel': defaultModel,
+        });
+
+        print('User defaults added successfully.');
+      } else {
+        print('No user found with the specified email.');
+      }
+    } catch (e) {
+      print('Error adding user defaults: $e');
+    }
   }
 
   Future<void> Help(BuildContext context) {
@@ -676,4 +1121,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
