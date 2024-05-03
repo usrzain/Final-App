@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'package:effecient/Providers/chData.dart';
+import 'package:connectivity/connectivity.dart';
 
 import 'package:effecient/Screens/CarSelection/carSelection.dart';
 
@@ -91,15 +92,68 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-        useMaterial3: true,
-      ),
-      home: widget.initialScreen,
-      routes: {'/reservations': (context) => ReservationScreen()},
-    );
+    return StreamBuilder(
+        stream: Connectivity().onConnectivityChanged,
+        builder: (context, snapshot) {
+          if (snapshot.data == ConnectivityResult.mobile ||
+              snapshot.data == ConnectivityResult.wifi) {
+            return GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+                useMaterial3: true,
+              ),
+              home: widget.initialScreen,
+              routes: {'/reservations': (context) => ReservationScreen()},
+            );
+          } else {
+            return Directionality(
+                // Set textDirection based on your app's language (optional)
+                textDirection: TextDirection.ltr, // Left-to-right by default
+                child: Stack(
+                  children: [
+                    LoadingScreen(),
+                    const Positioned(
+                      // top: 25,
+                      // left: 0,
+                      // right: 0,
+
+                      child: noInternet(), // your loading button here
+                    )
+                  ],
+                ));
+          }
+        });
+  }
+}
+
+class noInternet extends StatefulWidget {
+  const noInternet({Key? key}) : super(key: key);
+
+  @override
+  _noInternetState createState() => _noInternetState();
+}
+
+class _noInternetState extends State<noInternet> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Colors.black.withOpacity(0.7),
+        child: const Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.wifi_off,
+              size: 50.0,
+              color: Colors.red,
+            ),
+            Text(
+              'No internet connection!',
+              style: TextStyle(fontSize: 20.0),
+            ),
+          ],
+        )));
   }
 }
