@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field, prefer_final_fields, library_private_types_in_public_api, unused_import, unnecessary_import, dead_code
+// ignore_for_file: unused_field, prefer_final_fields, library_private_types_in_public_api, unused_import, unnecessary_import, dead_code, prefer_typing_uninitialized_variables
 
 import 'dart:async';
 import 'dart:convert';
@@ -48,7 +48,7 @@ class _MapScreenState extends State<MapScreen> {
 
   Set<Marker> _markers = {}; // Set to store markers
   GoogleMapController? _mapController;
-  LatLng _initialPosition = LatLng(24.8607, 67.0011);
+  LatLng _initialPosition = const LatLng(24.8607, 67.0011);
   // for new polyline
   polyLine_Response plineResp = polyLine_Response();
   String googleAPiKey = "AIzaSyCtDSgmH1koRCq9tU3zqf4T5tzsISG3nNY";
@@ -58,7 +58,7 @@ class _MapScreenState extends State<MapScreen> {
   int length = 20;
   Map<String, dynamic> aLLCS = {};
   LocationData? currentLocation;
-  LatLng _center = LatLng(0.0, 0.0);
+  LatLng _center = const LatLng(0.0, 0.0);
   final double _radius = 1000;
   DatabaseReference ref = FirebaseDatabase.instance.ref("Locations");
   String rating = '4.0';
@@ -75,7 +75,7 @@ class _MapScreenState extends State<MapScreen> {
 
   // bool localpPoint = false;
 
-  // Getting the User Data and Stroing for Future use
+  // Getting the User Data and Strong for Future use
 
   // initializing Shared State
   Future<void> _initializePrefs() async {
@@ -979,7 +979,7 @@ class _MapScreenState extends State<MapScreen> {
                                 ),
                               ],
                             )
-                          : loadingWidget(context, 'Markers')
+                          : LoadingWidget(text: 'Map')
                       :
                       // If Reset is False then show a map with polylines
                       // Checking the Polylines has been drawn or not
@@ -1073,7 +1073,33 @@ class _MapScreenState extends State<MapScreen> {
                                 // ),
                               ],
                             )
-                          : loadingWidget(context, 'Polylines');
+                          : Stack(
+                              children: [
+                                GoogleMap(
+                                  mapType: MapType.normal,
+                                  initialCameraPosition: CameraPosition(
+                                    target: dataProvider.initialPosition,
+                                    zoom: 12.0,
+                                  ),
+                                  onMapCreated:
+                                      (GoogleMapController controller) {
+                                    _mapController = controller;
+                                  },
+                                  markers: dataProvider.markers,
+                                  polylines: dataProvider.pPoints,
+                                ),
+                                Positioned(
+                                    // top: 25,
+                                    // left: 0,
+                                    // right: 0,
+                                    child: Center(
+                                  child: LoadingWidget(
+                                      text:
+                                          'Fetching Best CS'), // your loading button here
+                                ))
+                              ],
+                            );
+                  // : LoadingWidget(text: 'Fetching Best CS');
                 },
               ),
             ],

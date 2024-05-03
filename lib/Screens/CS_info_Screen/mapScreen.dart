@@ -809,7 +809,7 @@ class _MapScreenState extends State<MapScreen> {
                             child: const Text('Filter'),
                           )
                         ])
-                      : loadingWidget(context, 'Markers')
+                      : LoadingWidget(text: 'Map')
                   :
                   // If Reset is False then show a map with polylines
                   // Checking the Polylines has been drawn or not
@@ -850,7 +850,7 @@ class _MapScreenState extends State<MapScreen> {
                                     Text('The Range is ${dataProvider.range}'))
                           ],
                         )
-                      : loadingWidget(context, 'Polylines');
+                      : LoadingWidget(text: 'Fetching Best Charging Station');
               // ---
 
               // check either button has been pushed or not
