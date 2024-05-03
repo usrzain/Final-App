@@ -147,6 +147,7 @@ class chDataProvider extends ChangeNotifier {
     navBar(id: 4, iconOrImagePath: Icons.person, name: 'Me'),
   ];
   int _selectedTabIndex = 0;
+  bool _userFetchDuringOrAfterLogin = false;
 
   // Getter to access the data
   bool get loading => _loading;
@@ -193,6 +194,7 @@ class chDataProvider extends ChangeNotifier {
   List<Map<String, dynamic>> get modelList => _modelList;
   List<navBar> get navBtn => _navBtn;
   int get selectedTabIndex => _selectedTabIndex;
+  bool get userFetchDuringOrAfterLogin => _userFetchDuringOrAfterLogin;
 
   int value = 1; // Initial value
 
@@ -403,6 +405,11 @@ class chDataProvider extends ChangeNotifier {
 
   set modelList(value) {
     _modelList = value;
+    notifyListeners();
+  }
+
+  set userFetchDuringOrAfterLogin(bool value) {
+    _userFetchDuringOrAfterLogin = value;
     notifyListeners();
   }
 

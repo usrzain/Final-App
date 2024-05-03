@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:effecient/Providers/favStation.dart';
 import 'package:effecient/Screens/CS_info_Screen/extraFun.dart';
 import 'package:effecient/Screens/CS_info_Screen/mapFunctions.dart';
@@ -32,6 +33,7 @@ import 'package:favorite_button/favorite_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cool_alert/cool_alert.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -115,10 +117,64 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  void fetchingUserDetails() async {
+    User? LoggedinUser = FirebaseAuth.instance.currentUser;
+    Provider.of<chDataProvider>(context, listen: false).loggedInUser =
+        LoggedinUser;
+
+    dynamic email = LoggedinUser!.email;
+    final emailQuery = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    for (var doc in emailQuery.docs) {
+      final userData = doc.data() as Map<String, dynamic>;
+      // Access specific user details using keys in the map
+      final name = userData['username'];
+      final email =
+          userData['email']; // This will be the same email used in the query
+
+      final brand = userData['defaultBrand'];
+      final model = userData['defaultModel'];
+      // final contFav = userData.containsKey('favorites');
+      // final contBook = userData.containsKey('bookings');
+
+      Provider.of<chDataProvider>(context, listen: false).userData =
+          Map.from(userData);
+
+      print(userData.runtimeType);
+
+      // Access other user details based on field names
+      // Map<String, dynamic>? fetchUser = {'email': email, 'username': name};
+      Provider.of<chDataProvider>(context, listen: false).userEmail = email;
+      Provider.of<chDataProvider>(context, listen: false).userName = name;
+
+      Provider.of<chDataProvider>(context, listen: false).defaultBrand = brand;
+      Provider.of<chDataProvider>(context, listen: false).defaultModel = model;
+      print('$name');
+      print('details');
+      print(Provider.of<chDataProvider>(context, listen: false).defaultBrand);
+      print(Provider.of<chDataProvider>(context, listen: false).defaultModel);
+
+      Provider.of<chDataProvider>(context, listen: false).profileFetchingDone =
+          true;
+      Provider.of<chDataProvider>(context, listen: false)
+          .userFetchDuringOrAfterLogin = true;
+      print('Profile Fetching is Done');
+    }
+  }
+
   @override
   void initState() {
+    print('This if fetching the Map details ');
+    print(Provider.of<chDataProvider>(context, listen: false).loggedInUser);
     chDataProvider localprovider =
         Provider.of<chDataProvider>(context, listen: false);
+    if (localprovider.userFetchDuringOrAfterLogin == false) {
+      print('Re fetching data from Login');
+      fetchingUserDetails();
+    }
 
     // localprovider.favStations = localprovider.userData['']
     _initializePrefs();

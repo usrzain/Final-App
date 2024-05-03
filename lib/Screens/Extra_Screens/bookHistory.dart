@@ -16,11 +16,11 @@ class BookHistory extends StatefulWidget {
 class _BookHistoryState extends State<BookHistory> {
   String formatTimestamp(Timestamp timestamp) {
     // Convert Firestore Timestamp to DateTime
-    DateTime dateTime = timestamp.toDate();
+    final dateTime = DateTime.fromMicrosecondsSinceEpoch(
+        timestamp.seconds * 1000000 + timestamp.nanoseconds ~/ 1000);
     // Format the timestamp as a string
-    String formattedDateTime =
-        DateFormat('MMMM d, y hh:mm:ss a').format(dateTime);
-    return formattedDateTime;
+    final formattedDate = DateFormat('MMMM d, yyyy - HH:mm').format(dateTime);
+    return formattedDate;
   }
 
   @override
@@ -81,6 +81,7 @@ class _BookHistoryState extends State<BookHistory> {
                           ),
                         );
                       } else {
+                        print(dataProvider.bookings.entries);
                         // If there are favourites, show the list
                         return ListView.builder(
                           itemCount: dataProvider.bookings.entries.length,
@@ -130,10 +131,10 @@ class _BookHistoryState extends State<BookHistory> {
                                               style: const TextStyle(
                                                 fontStyle: FontStyle.italic,
                                                 color: Colors.white,
-                                                fontSize: 18,
+                                                fontSize: 14,
                                                 // White text color
                                               ),
-                                              maxLines: 2,
+                                              maxLines: 3,
                                             ),
                                           ),
                                         ],
@@ -141,31 +142,35 @@ class _BookHistoryState extends State<BookHistory> {
                                       const SizedBox(height: 4),
                                       Row(
                                         children: [
-                                          const Icon(Icons.attach_money,
-                                              color: Colors.green), // Cost icon
+                                          const Icon(Icons.date_range_outlined,
+                                              color: Colors.blue), // Cost icon
                                           const SizedBox(width: 4),
+
                                           Text(
                                             'Booked on: ${formatTimestamp(dataProvider.bookings.entries.elementAt(index).value['Booked on'])}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.normal,
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 14,
                                             ),
+                                            overflow: TextOverflow.clip,
+                                            maxLines: 2,
                                           ),
                                         ],
                                       ),
                                       const SizedBox(height: 4),
                                       Row(
                                         children: [
-                                          const Icon(Icons.attach_money,
-                                              color: Colors.green), // Cost icon
+                                          const Icon(Icons.access_time_sharp,
+                                              color:
+                                                  Colors.yellow), // Cost icon
                                           const SizedBox(width: 4),
                                           Text(
                                             'Reach until: ${dataProvider.bookings.entries.elementAt(index).value['time'].toString()}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.normal,
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 14,
                                             ),
                                           ),
                                         ],
@@ -173,15 +178,16 @@ class _BookHistoryState extends State<BookHistory> {
                                       const SizedBox(height: 4),
                                       Row(
                                         children: [
-                                          const Icon(Icons.attach_money,
-                                              color: Colors.green), // Cost icon
+                                          const Icon(Icons.receipt_sharp,
+                                              color:
+                                                  Colors.purple), // Cost icon
                                           const SizedBox(width: 4),
                                           Text(
                                             'Token No: ${dataProvider.bookings.entries.elementAt(index).value['token'].toString()}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.normal,
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 14,
                                             ),
                                           ),
                                         ],
@@ -193,11 +199,11 @@ class _BookHistoryState extends State<BookHistory> {
                                               color: Colors.green), // Cost icon
                                           const SizedBox(width: 4),
                                           Text(
-                                            'total cost: \$${dataProvider.bookings.entries.elementAt(index).value['total cost'].toStringAsFixed(2)}',
+                                            'total cost: Rs ${dataProvider.bookings.entries.elementAt(index).value['total cost'].toStringAsFixed(2)}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.normal,
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 14,
                                             ),
                                           ),
                                         ],
@@ -219,6 +225,5 @@ class _BookHistoryState extends State<BookHistory> {
         ],
       ),
     );
-    ;
   }
 }

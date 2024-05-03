@@ -6,6 +6,13 @@ import 'package:flutter/widgets.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:effecient/Providers/chData.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:typed_data';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class Booking extends StatefulWidget {
   final int? timetaken;
@@ -306,7 +313,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                               (_currentRangeValues.end.round() -
                                   currentCharge.round());
 
-                          print('totla cost ');
+                          print('total cost ');
                           print(totalCost);
                         });
                       },
@@ -633,7 +640,7 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                           MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Station Name',
+                                          'Station Name : ',
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold),
@@ -732,7 +739,9 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                               context,
                                               listen: false)
                                           .selectedKey;
+                                      // downloadPdf();
 
+// -----------------
                                       updateSpecificValue(stationList, key);
                                       Provider.of<chDataProvider>(context,
                                               listen: false)
@@ -740,6 +749,8 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
                                               arrivalTime, totalCost);
                                       MapsLauncher.launchCoordinates(
                                           lati, long, title);
+
+                                      // ---------------
                                     },
                                     child: Text(
                                       'Save & Go',
@@ -793,6 +804,107 @@ class _BookingState extends State<Booking> with TickerProviderStateMixin {
           : SizedBox(),
     ]);
   }
+
+  Future<void> downloadPdf() async {
+    // --
+
+    PdfDocument document = PdfDocument();
+//Create a PdfGrid
+    PdfGrid grid = PdfGrid();
+//Add columns to grid
+    grid.columns.add(count: 3);
+//Add headers to grid
+    grid.headers.add(2);
+    PdfGridRow header = grid.headers[0];
+    header.cells[0].value = 'Employee ID';
+    header.cells[1].value = 'Employee Name';
+    header.cells[2].value = 'Salary';
+//Add rows to grid
+    PdfGridRow row1 = grid.rows.add();
+    row1.cells[0].value = 'E01';
+    row1.cells[1].value = 'Clay';
+    row1.cells[2].value = '\$10,000';
+    PdfGridRow row2 = grid.rows.add();
+    row2.cells[0].value = 'E02';
+    row2.cells[1].value = 'Simon';
+    row2.cells[2].value = '\$12,000';
+//Set the row span
+    row1.cells[1].rowSpan = 2;
+//Set the row height
+    row2.height = 20;
+//Set the row style
+    row1.style = PdfGridRowStyle(
+        backgroundBrush: PdfBrushes.dimGray,
+        textPen: PdfPens.lightGoldenrodYellow,
+        textBrush: PdfBrushes.darkOrange,
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 12));
+//Draw the grid in PDF document page
+    grid.draw(page: document.pages.add(), bounds: Rect.zero);
+//Save the document.
+    List<int> bytes = await document.save();
+    // Get the directory path of the device's storage
+    Directory directory = await getApplicationDocumentsDirectory();
+    // Create a new file in the directory
+    File file = File('${directory.path}/employee_data.pdf');
+    // Write the bytes to the file
+    await file.writeAsBytes(bytes);
+//Dispose the document.
+    document.dispose();
+
+    // ---
+  }
+  // generatePdf().then((pdfFile) {
+  //   getApplicationDocumentsDirectory().then((directory) {
+  //     File('${directory.path}/ticket.pdf').create().then((file) {
+  //       file.writeAsBytes(pdfFile).then((value) {
+  //         Fluttertoast.showToast(msg: 'PDF downloaded successfully!');
+  //       });
+  //     });
+  //   });
+  // });
+
+  // Future<Uint8List> generatePdf() {
+  //   final pdf = pw.Document();
+  //   pdf.addPage(
+  //     pw.Page(
+  //       build: (context) => pw.Center(
+  //         child: pw.Text('This is a sample ticket PDF!'),
+  //       ),
+  //     ),
+  //   );
+  //   return pdf.save();
+  // }
+
+  // Future<void> downloadPDF() async {
+  //   final pdf = pdf.Document();
+  //   // ... rest of the PDF generation code
+  //   pdf.addPage(pdf.Page(
+  //     pageFormat: PdfPageFormat.a4,
+  //     build: (context) {
+  //       // Add content to the PDF page using pdf.Text, pdf.Paragraph, etc.
+  //       context.drawString(
+  //           'Name: ${Provider.of<chDataProvider>(context, listen: false).userName}',
+  //           fontSize: 16);
+  //       // ... Add remaining bill details
+  //     },
+  //   ));
+
+  //   // Get the downloads directory path
+  //   final directory = await getDownloadsDirectory();
+
+  //   // Create a unique file name with timestamp
+  //   final now = DateTime.now();
+  //   final fileName = 'bill_details_${now.toIso8601String()}.pdf';
+  //   final outputFile = File(join(directory!.path, fileName));
+
+  //   // Save the PDF document
+  //   await pdf.save(outputFile);
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text('Bill downloaded to Downloads!'),
+  //     ),
+  //   );
+  // }
 
   Future<void> selectAlert(BuildContext context) {
     return showDialog<void>(

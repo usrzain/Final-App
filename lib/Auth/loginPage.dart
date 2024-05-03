@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:effecient/Providers/chData.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,6 +64,8 @@ class _LoginPageState extends State<LoginPage> {
 
         Provider.of<chDataProvider>(context, listen: false)
             .profileFetchingDone = true;
+        Provider.of<chDataProvider>(context, listen: false)
+            .userFetchDuringOrAfterLogin = true;
         print('Profile Fetching is Done');
 
         Navigator.pushReplacement(
@@ -217,11 +220,49 @@ class _LoginPageState extends State<LoginPage> {
       loggedInUser = FirebaseAuth.instance.currentUser;
       getUserDetails(loggedInUser!.email);
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${e.message}'),
-        ),
-      );
+      switch (e.code) {
+        case 'user-not-found':
+          // Handle user not found error
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            text: "User Not found",
+          );
+          break;
+        case 'wrong-password':
+          // Handle wrong password error
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            text: "Wrong password ! please enter correct password",
+          );
+          break;
+        case 'invalid-email':
+          // Handle invalid email error
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            text: "Email address is not found ",
+          );
+          break;
+        case 'user-disabled':
+          // Handle user disabled error
+          CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            text: "Your account has been disabled, Please use another account",
+          );
+          break;
+        // Add more cases as needed for other errors
+        default:
+          // Handle other errors
+          break;
+      }
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('${e.message}'),
+      //   ),
+      // );
     }
   }
 }

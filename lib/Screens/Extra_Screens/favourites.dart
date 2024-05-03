@@ -193,10 +193,13 @@ class _FavouritesState extends State<Favourites> {
                         );
                       } else {
                         // If there are favourites, show the list
-                        return ListView.builder(
+                        return Expanded(
+                            child: ListView.builder(
+                          scrollDirection: Axis.vertical,
                           itemCount: dataProvider.favStations.entries.length,
                           itemBuilder: (context, index) {
-                            return Container(
+                            return SingleChildScrollView(
+                                child: Container(
                               margin: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 16),
                               decoration: BoxDecoration(
@@ -269,9 +272,9 @@ class _FavouritesState extends State<Favourites> {
                                   ),
                                 ),
                               ),
-                            );
+                            ));
                           },
-                        );
+                        ));
                       }
                     },
                   ),

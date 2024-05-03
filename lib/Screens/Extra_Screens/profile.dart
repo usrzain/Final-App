@@ -549,7 +549,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Help(context);
                           break;
                         case 'Logout':
-                          logOut();
+                          CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.confirm,
+                            confirmBtnText: 'Yes',
+                            cancelBtnText: 'No',
+                            onConfirmBtnTap: () {
+                              logOut();
+                            },
+                          );
+
                           break;
                         case "Delete Account":
                           print("Clicked on $title");
